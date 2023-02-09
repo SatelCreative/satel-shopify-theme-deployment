@@ -6,7 +6,7 @@ GITHUB_TOKEN=$3
 SHOPIFY_API_VERSION=$4
 
 echo "Installing Theme Kit"
-curl -s https://shopify.dev/themekit.py | sudo python3
+curl -s https://raw.githubusercontent.com/Shopify/themekit/master/scripts/install.py | sudo python
 
 echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
 THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
