@@ -5,13 +5,7 @@ REPO_NAME=$2
 GITHUB_TOKEN=$3
 SHOPIFY_API_VERSION=$4
 
-echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
 THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
-
-# echo "Theme password ${THEMEKIT_PASSWORD} "
-
-THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store=${STORE_NAME}.myshopify.com`
-echo  "THEME_ID ${THEME_NAMES}"
 
 # function delete_inactive_themes() {
 #     # grab all the themes except for main and sandboxes as we dont want to delete theme
@@ -37,7 +31,7 @@ echo  "THEME_ID ${THEME_NAMES}"
 
 # function get_branch_list(){
 #     PAYLOAD="query { \
-#         organization(login: \\\"Rahul-Personal-lists\\\") {\
+#         organization(login: \\\"SatelCreative\\\") {\
 #             repository(name: \\\"${REPO_NAME}\\\") {\
 #             refs(refPrefix: \\\"refs/heads/\\\", first: 100) {\
 #                 edges {\
