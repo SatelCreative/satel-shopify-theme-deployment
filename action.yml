@@ -38,41 +38,41 @@ inputs:
 runs:
   using: "composite"
   steps:
-        - name: Delete Old Themes
-          run: |
-            if [[ ${{ inputs.current-branch-name }} != 'main' ]] || [ -n ${{ inputs.tag-name }} ]; then
-              stores=( ${{ inputs.store-name }} )
-              for store in "${stores[@]}"
-              do
-                echo "Running on store ${store}"  
-                ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh ${store}  ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.shopify-api-version }} 
-              done 
-            fi   
-          shell: bash  
+    - name: Delete Old Themes
+      run: |
+        if [[ ${{ inputs.current-branch-name }} != 'main' ]] || [ -n ${{ inputs.tag-name }} ]; then
+          stores=( ${{ inputs.store-name }} )
+          for store in "${stores[@]}"
+          do
+            echo "Running on store ${store}"  
+            ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh ${store}  ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.shopify-api-version }} 
+          done 
+        fi   
+      shell: bash  
 
-        # - name: Deploy a PR or a Tag
-        #   run: |
-        #     if [[ ${{ inputs.current-branch-name }} != 'main' ]] || [ -n ${{ inputs.tag-name }} ]; then
-        #       stores=( ${{ inputs.store-name }} )
-        #       for store in "${stores[@]}"
-        #       do
-        #         echo "Running on store ${store}"  
-        #         ${{ github.action_path }}/scripts/DeployPRorTag.sh ${store}  ${{ inputs.theme-env }} ${{ inputs.copy-settings }} ${{ inputs.shopify-api-version }} ${{ inputs.theme-files-location }} ${{ inputs.current-branch-name }} ${{ inputs.tag-name }}
-        #       done 
-        #     fi   
-        #   shell: bash  
+    - name: Deploy a PR or a Tag
+      run: |
+        if [[ ${{ inputs.current-branch-name }} != 'main' ]] || [ -n ${{ inputs.tag-name }} ]; then
+          stores=( ${{ inputs.store-name }} )
+          for store in "${stores[@]}"
+          do
+            echo "Running on store ${store}"  
+            ${{ github.action_path }}/scripts/DeployPRorTag.sh ${store}  ${{ inputs.theme-env }} ${{ inputs.copy-settings }} ${{ inputs.shopify-api-version }} ${{ inputs.theme-files-location }} ${{ inputs.current-branch-name }} ${{ inputs.tag-name }}
+          done 
+        fi   
+      shell: bash  
 
-        # - name: Deploy Main
-        #   run: |
-        #       if [[ ${{ inputs.current-branch-name }} == 'main' ]]; then
-        #         stores=( ${{ inputs.store-name }} )
-        #         i=0
-        #         for store in "${stores[@]}"
-        #         do
-        #           echo "Running on store ${store}" 
-        #           ids=( ${{ inputs.main-theme-id }} ) 
-        #           ${{ github.action_path }}/scripts/DeployMain.sh ${store} ${{ inputs.current-branch-name }} ${ids[i]} ${{ inputs.theme-env }} ${{ inputs.shopify-api-version }} ${{ inputs.theme-files-location }}
-        #           i=$((i+1))
-        #         done 
-        #       fi  
-        #   shell: bash  
+    - name: Deploy Main
+      run: |
+          if [[ ${{ inputs.current-branch-name }} == 'main' ]]; then
+            stores=( ${{ inputs.store-name }} )
+            i=0
+            for store in "${stores[@]}"
+            do
+              echo "Running on store ${store}" 
+              ids=( ${{ inputs.main-theme-id }} ) 
+              ${{ github.action_path }}/scripts/DeployMain.sh ${store} ${{ inputs.current-branch-name }} ${ids[i]} ${{ inputs.theme-env }} ${{ inputs.shopify-api-version }} ${{ inputs.theme-files-location }}
+              i=$((i+1))
+            done 
+          fi  
+      shell: bash  
