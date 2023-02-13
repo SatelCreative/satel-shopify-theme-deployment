@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Running delete themes script"
+
 STORE_NAME=$1
 REPO_NAME=$2
 GITHUB_TOKEN=$3

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Running deploy a PR or tag themes script"
+
 STORE_NAME=$1 
 THEME_ENV=$2
 COPY_SETTINGS=$3
@@ -10,8 +12,8 @@ TAG_NAME=$7
 THEME_ID=" "
 
 echo "STORE_NAME=${STORE_NAME}, THEME_NAME=${BRANCH_NAME}, THEME_ENV=${THEME_ENV}, COPY_SETTINGS=${COPY_SETTINGS}"
-THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
-
+#THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
+THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
 
 if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
 then

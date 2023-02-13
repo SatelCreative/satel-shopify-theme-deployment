@@ -1,4 +1,7 @@
 #!/bin/bash
+
+echo "Running deloy main branch script"
+
 STORE_NAME=$1
 THEME_NAME=$2 
 THEME_ID=$3
@@ -6,8 +9,8 @@ THEME_ENV=$4
 SHOPIFY_API_VERSION=$5
 WORK_DIR=$6
 
-THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
-
+#THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
+THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
 if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder
 then
     echo "WORK_DIR ${WORK_DIR}"
