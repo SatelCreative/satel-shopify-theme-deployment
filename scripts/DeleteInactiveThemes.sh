@@ -10,8 +10,8 @@ THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from
 
 # echo "Theme password ${THEMEKIT_PASSWORD} "
 
-THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store=${STORE_NAME}.myshopify.com | grep 'PR: ' | awk '{print $3}'`
-echo  "THEME_ID ${THEME_ID}"
+THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store=${STORE_NAME}.myshopify.com`
+echo  "THEME_ID ${THEME_NAMES}"
 
 # function delete_inactive_themes() {
 #     # grab all the themes except for main and sandboxes as we dont want to delete theme
