@@ -6,9 +6,9 @@ GITHUB_TOKEN=$3
 SHOPIFY_API_VERSION=$4
 
 echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
-echo ${PWD}
-ls
-THEMEKIT_PASSWORD=$(cat theme.json | jq -r '."'${STORE_NAME}'"') #decode password from json
+
+#THEMEKIT_PASSWORD=$(cat theme.json | jq -r '."'${STORE_NAME}'"') #decode password from json
+THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
 
 function delete_inactive_themes() {
     # grab all the themes except for main and sandboxes as we dont want to delete theme
