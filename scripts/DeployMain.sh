@@ -3,7 +3,7 @@
 echo "Running deloy main branch script"
 
 STORE_NAME=$1
-THEME_NAME=$2 
+THEME_NAME='main'#$2 
 THEME_ID=$3
 THEME_ENV=$4
 SHOPIFY_API_VERSION=$5
