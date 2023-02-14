@@ -3,7 +3,7 @@
 echo "Running deloy main branch script"
 
 STORE_NAME=$1
-THEME_NAME='main'#$2 
+THEME_NAME=$2 
 THEME_ID=$3
 THEME_ENV=$4
 SHOPIFY_API_VERSION=$5
@@ -24,7 +24,11 @@ function deploy_main_branch(){
   NEW_THEME_NAME="${THEME_NAME^^}"
   echo ${NEW_THEME_NAME} ${NAME}
   #This will rename the theme
-  curl -d "{\"theme\":{\"name\": \"${NEW_THEME_NAME} ${NAME}\", \"id\": \"${THEME_ID}\"}}" \
+  # curl -d "{\"theme\":{\"name\": \"${NEW_THEME_NAME} ${NAME}\", \"id\": \"${THEME_ID}\"}}" \
+  #       -X PUT "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+  #       -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
+  #       -H "Content-Type: application/json"
+   curl -d "{\"theme\":{\"name\": \"Test ${NAME}\", \"id\": \"${THEME_ID}\"}}" \
         -X PUT "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
