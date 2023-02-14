@@ -1,5 +1,5 @@
 name: Satel theme deployment
-description: Deploys themes for a shopify storefront
+description: Deploys themes to a shopify store
 
 inputs:
   store-name:
@@ -64,7 +64,7 @@ runs:
 
     - name: Deploy Main
       run: |
-          if [[ ${{ inputs.current-branch-name }} != 'main' ]]; then
+          if [[ ${{ inputs.current-branch-name }} == 'main' ]]; then
             stores=( ${{ inputs.store-name }} )
             i=0
             for store in "${stores[@]}"
