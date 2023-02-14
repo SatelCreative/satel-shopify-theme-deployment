@@ -64,7 +64,7 @@ runs:
 
     - name: Deploy Main
       run: |
-          if [[ ${{ inputs.current-branch-name }} == 'main' ]]; then
+          if [[ ${{ inputs.current-branch-name }} != 'main' ]]; then
             stores=( ${{ inputs.store-name }} )
             i=0
             for store in "${stores[@]}"
