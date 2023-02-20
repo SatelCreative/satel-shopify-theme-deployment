@@ -50,6 +50,7 @@ runs:
           for store in "${stores[@]}"
           do
             echo "Running on store ${store}"  
+            echo "work-dir ${{ inputs.theme-files-location }}"
             ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh ${store}  ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.shopify-api-version }} 
           done 
         fi   

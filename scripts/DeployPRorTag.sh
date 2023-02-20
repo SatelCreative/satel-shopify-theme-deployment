@@ -51,7 +51,7 @@ deploy_pr_branch_or_tag() {
     fi 
 
     echo "PR preview links"
-    PREVIEW_LINK=`theme open --env=${THEME_NAME} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
+    PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
     echo $PREVIEW_LINK
 
     echo "Running deploy command"
