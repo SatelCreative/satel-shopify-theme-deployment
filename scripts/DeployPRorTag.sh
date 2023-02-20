@@ -11,8 +11,6 @@ BRANCH_NAME=$6
 TAG_NAME=$7
 THEME_ID=" "
 
-echo "STORE_NAME=${STORE_NAME}, THEME_NAME=${BRANCH_NAME}, THEME_ENV=${THEME_ENV}, COPY_SETTINGS=${COPY_SETTINGS}"
-#THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
 THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
 
 if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
@@ -30,8 +28,7 @@ fi
 
 deploy_pr_branch_or_tag() { 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
-    echo "THEME_ID ${THEME_ID}"
-    ls
+
     if [[ ! "${THEME_ID}" ]] 
     then
         # Theme doesnt exist, create it
@@ -56,14 +53,11 @@ deploy_pr_branch_or_tag() {
     #TODO : PR theme links  
 
     echo "Running deploy command"
-    echo "PWD ${PWD}"
-    ls
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
 
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
     if [[ $STATUS1 != 0 ]]
     then 
-        ls
         echo "THEME DEPLOY LOOP"
         theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; 
     fi    
@@ -71,8 +65,6 @@ deploy_pr_branch_or_tag() {
 
 function configure_theme(){
     theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}
-    echo "Configre loop ${THEME_ID}"
-    ls 
 }
 
 function create_theme(){

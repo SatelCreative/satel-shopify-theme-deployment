@@ -9,8 +9,7 @@ SHOPIFY_API_VERSION=$4
 
 echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
 
-#THEMEKIT_PASSWORD=$(cat theme.json | jq -r '."'${STORE_NAME}'"') #decode password from json
-THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
+THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
 
 function delete_inactive_themes() {
     # grab all the themes except for main and sandboxes as we dont want to delete theme
@@ -58,7 +57,7 @@ function get_branch_list(){
     if [[ $STATUS1 != 0 ]]
     then    
         exit 1
-    fi  
-    echo $BRANCH_LIST       
+    fi         
 }
+
 delete_inactive_themes

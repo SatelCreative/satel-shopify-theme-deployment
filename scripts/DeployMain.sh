@@ -9,9 +9,10 @@ THEME_ENV=$4
 SHOPIFY_API_VERSION=$5
 WORK_DIR=$6
 
-#THEMEKIT_PASSWORD=$(jq -r '."'${STORE_NAME}'"' theme.json) #decode password from json
 THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
-if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder
+
+#only change dir if theme files are in a different folder
+if [[ -n $WORK_DIR ]] 
 then
     echo "WORK_DIR ${WORK_DIR}"
     cd $WORK_DIR
@@ -22,7 +23,6 @@ function deploy_main_branch(){
 
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${THEME_NAME^^}"
-  echo ${NEW_THEME_NAME} ${NAME}
   #This will rename the theme
   curl -d "{\"theme\":{\"name\": \"${NEW_THEME_NAME} ${NAME}\", \"id\": \"${THEME_ID}\"}}" \
         -X PUT "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
@@ -31,6 +31,5 @@ function deploy_main_branch(){
   #Deploy to live
   theme -e developtheme deploy --allow-live --ignored-file=config/settings_data.json    
 }
-
 
 deploy_main_branch

@@ -1,4 +1,4 @@
-name: Satel theme deployment
+name: Satel shopify theme deployment
 description: Deploys themes to a shopify store
 
 inputs:
