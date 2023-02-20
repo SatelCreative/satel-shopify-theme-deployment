@@ -6,10 +6,10 @@ This centralized GitHub action deploys a theme to shopify admin
 - name: Deploy theme
   uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
   with: 
-    store-name: '<store-name>' # for multiple store <[store_name1, store_name2]>  
+    store-name: '<store-name>' # for multiple store '<store_name1 store_name2>'  
     theme-env: 'developtheme'
     copy-settings: true
-    main-theme-id: "<theme-id>" # theme that's live on the dev stores
+    main-theme-id: "<theme-id>" # theme that's live on the dev stores, for multiple store '<theme-id-1> <theme-id-2>'
     repo-name: ${{ env.REPO_NAME }} 
     github-token: ${{ secrets.GITHUB_TOKEN }}
     shopify-api-version: "<stable-shopify-api-version>" # format: 2022-10
@@ -65,7 +65,7 @@ jobs:
         
         - name: Set branch name
           if: ${{ github.ref != 'refs/heads/main' }}
-          run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+          run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
 
         - name: Current tag name
           id: tag-name
