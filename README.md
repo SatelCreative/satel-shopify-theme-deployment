@@ -1,4 +1,4 @@
-# Shopify theme deployment action
+# Satel shopify theme deployment action
 This centralized GitHub action deploys a theme to shopify admin
 
 ## Usage
