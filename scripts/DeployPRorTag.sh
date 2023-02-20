@@ -80,4 +80,4 @@ deploy_pr_branch_or_tag
 
 
 # These outputs are used in other steps/jobs via action.yml
-echo "::set-output name=previewLink::$(echo PREVIEW_LINK)"
+echo "::set-output name=preview_link::$PREVIEW_LINK"
