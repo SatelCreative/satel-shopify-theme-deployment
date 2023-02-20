@@ -33,7 +33,12 @@ inputs:
     required: false  
   tag-name: 
     description: Provides current tag name
-    required: false     
+    required: false  
+
+outputs:
+  preview-link:  # id of output
+    description: 'Theme preview link'
+    value:  ${{ steps.preview-link.outputs.preview_link }}
 
 runs:
   using: "composite"

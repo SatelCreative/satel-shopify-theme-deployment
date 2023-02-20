@@ -50,7 +50,9 @@ deploy_pr_branch_or_tag() {
         theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live
     fi 
 
-    #TODO : PR theme links  
+    echo "PR preview links"
+    PREVIEW_LINK=`theme open --env=${THEME_NAME} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
+    echo $PREVIEW_LINK
 
     echo "Running deploy command"
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
@@ -75,3 +77,7 @@ function create_theme(){
 }
 
 deploy_pr_branch_or_tag
+
+
+# These outputs are used in other steps/jobs via action.yml
+echo "::set-output name=preview_link::$PREVIEW_LINK"
