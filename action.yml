@@ -1,5 +1,5 @@
 name: Satel shopify theme deployment
-description: Deploys themes to a shopify store
+description: Deploys theme(s) to shopify store(s)
 
 inputs:
   store-name:
@@ -38,7 +38,7 @@ inputs:
 outputs:
   preview-link:  # id of output
     description: 'Theme preview link'
-    value: ${{ steps.theme-preview-link.outputs.preview_link }}
+    value:  ${{ steps.deploy-pr.outputs.preview_link }}
 
 runs:
   using: "composite"
@@ -57,7 +57,7 @@ runs:
       shell: bash  
 
     - name: Deploy a PR or a Tag
-      id: theme-preview-link
+      id: deploy-pr
       run: |
         if [[ ${{ inputs.current-branch-name }} != 'main' ]] || [ -n ${{ inputs.tag-name }} ]; then
           stores=( ${{ inputs.store-name }} )
