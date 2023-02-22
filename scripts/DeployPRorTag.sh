@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Running deploy a PR or tag themes script"
-
 STORE_NAME=$1 
 THEME_ENV=$2
 COPY_SETTINGS=$3
@@ -33,34 +31,33 @@ deploy_pr_branch_or_tag() {
     then
         # Theme doesnt exist, create it
         # Use api call instead of theme new as the latter creates a V1 theme
-        echo "Create theme loop"
+        #echo "Creating theme"
         create_theme
         THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`  
         configure_theme # configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
     else
         # Theme exist, just configure it
-        echo "Configure theme loop"
+        #echo "Configuring theme"
         configure_theme
     fi
 
     if [[ $COPY_SETTINGS == true ]]
     then   
-        echo "COPY_SETTING LOOP"
         theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live
     fi 
 
-    echo "PR preview links"
+    #echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
-    echo $PREVIEW_LINK
+    #echo $PREVIEW_LINK
 
-    echo "Running deploy command"
+    #echo "Running deploy command"
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
 
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
     if [[ $STATUS1 != 0 ]]
     then 
-        echo "THEME DEPLOY LOOP"
+        echo "Redeploying theme"
         theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; 
     fi    
 }   
@@ -77,7 +74,6 @@ function create_theme(){
 }
 
 deploy_pr_branch_or_tag
-
 
 # These outputs are used in other steps/jobs via action.yml
 echo "::set-output name=preview_link::$PREVIEW_LINK"

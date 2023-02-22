@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Running delete themes script"
-
 STORE_NAME=$1
 REPO_NAME=$2
 GITHUB_TOKEN=$3
@@ -28,9 +26,7 @@ function delete_inactive_themes() {
             curl -d "{\"theme\":{\"id\": \"${THEME_ID}\", \"name\": \"${THEME}\"}}" \
             -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-            -H "Content-Type: application/json" 
-        else 
-            echo "No inactive themes to delete"   
+            -H "Content-Type: application/json"  
         fi
     done
 }

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Running deloy main branch script"
-
 STORE_NAME=$1
 THEME_NAME=$2 
 THEME_ID=$3
