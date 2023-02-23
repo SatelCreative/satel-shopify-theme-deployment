@@ -14,9 +14,9 @@ deploy_pr_branch_or_tag() {
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
-        THEME_NAME="TAG:${TAG_NAME}"
+        THEME_NAME="TAG: ${TAG_NAME}"
     else
-        THEME_NAME="PR:${BRANCH_NAME}"
+        THEME_NAME="PR: ${BRANCH_NAME}"
     fi
 
     THEME_ID=" "
