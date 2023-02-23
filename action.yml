@@ -76,15 +76,15 @@ runs:
     #   shell: bash  
 
     - name: Deploy Main
-      env: 
+      env:  
+        STORE_NAME: ${{ inputs.store-name }}
         BRANCH_NAME: ${{ inputs.current-branch-name }}
         MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
         THEME_ENV: ${{ inputs.theme-env }} 
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }} 
         WORK_DIR: ${{ inputs.theme-files-location }}
       run: |
-          ${{ github.action_path }}/scripts/DeployMain.sh
+          if [[ "${{ inputs.current-branch-name }}" != 'main' ]]; then
+            ${{ github.action_path }}/scripts/DeployMain.sh
+          fi  
       shell: bash  
-    # if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
-           
-         # fi  
