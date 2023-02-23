@@ -43,18 +43,18 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # - name: Delete Old Themes
-    #   run: |
-    #     if [[ -z "${{ inputs.current-branch-name }}" ]] || [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then
-    #       stores=( ${{ inputs.store-name }} )
-    #       for store in "${stores[@]}"
-    #       do
-    #         echo "Running on store ${store}"  
-    #         echo "work-dir ${{ inputs.theme-files-location }}"
-    #         ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh ${store}  ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.shopify-api-version }} 
-    #       done 
-    #     fi   
-    #   shell: bash  
+    - name: Delete Old Themes
+      run: |
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then
+          stores=( ${{ inputs.store-name }} )
+          for store in "${stores[@]}"
+          do
+            echo "Running on store ${store}"  
+            echo "work-dir ${{ inputs.theme-files-location }}"
+            ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh ${store}  ${{ inputs.repo-name }} ${{ inputs.github-token }} ${{ inputs.shopify-api-version }} 
+          done 
+        fi   
+      shell: bash  
 
     - name: Deploy a PR or a Tag
       id: deploy-pr

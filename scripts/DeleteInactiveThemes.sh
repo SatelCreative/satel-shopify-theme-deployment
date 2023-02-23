@@ -5,8 +5,6 @@ REPO_NAME=$2
 GITHUB_TOKEN=$3
 SHOPIFY_API_VERSION=$4
 
-echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
-
 THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
 
 function delete_inactive_themes() {
@@ -33,7 +31,7 @@ function delete_inactive_themes() {
 
 function get_branch_list(){
     PAYLOAD="query { \
-        organization(login: \\\"Rahul-Personal-lists\\\") {\
+        organization(login: \\\"SatelCreative\\\") {\
             repository(name: \\\"${REPO_NAME}\\\") {\
             refs(refPrefix: \\\"refs/heads/\\\", first: 100) {\
                 edges {\
