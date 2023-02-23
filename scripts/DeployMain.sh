@@ -1,22 +1,17 @@
 #!/bin/bash
 
-STORE_NAME=$1
-THEME_NAME=$2 
-THEME_ID=$3
-THEME_ENV=$4
-SHOPIFY_API_VERSION=$5
-WORK_DIR=$6
-
-THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
-
-#only change dir if theme files are in a different folder
-if [[ -n $WORK_DIR ]] 
-then
-    echo "WORK_DIR ${WORK_DIR}"
-    cd $WORK_DIR
-fi   
-
 function deploy_main_branch(){
+  STORE_NAME=$1
+  THEME_ID=$2 
+  THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
+
+  #only change dir if theme files are in a different folder
+  if [[ -n $WORK_DIR ]] 
+  then
+      echo "WORK_DIR ${WORK_DIR}"
+      cd $WORK_DIR
+  fi 
+
   theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}
 
   NAME=`TZ='US/Pacific' date`
@@ -28,6 +23,17 @@ function deploy_main_branch(){
         -H "Content-Type: application/json" 
   #Deploy to live
   theme -e developtheme deploy --allow-live --ignored-file=config/settings_data.json    
+  cd ..
 }
 
-deploy_main_branch
+
+
+stores=( ${STORE_NAME} )
+i=0
+for store in "${stores[@]}"
+do
+  echo "Running on store ${store}" 
+  ids=( ${MAIN_THEME_IDS} )
+  deploy_main_branch "${store} ${ids[i]}" 
+  i=$((i+1))
+done 

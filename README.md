@@ -84,7 +84,7 @@ jobs:
         - name: Deploy theme
           uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
           with: 
-            store-name: '<store-name>' 
+            store-name: '<store-name>'  # rahul-qa
             theme-env: 'developtheme'
             copy-settings: true
             main-theme-id: "<theme-id>" 

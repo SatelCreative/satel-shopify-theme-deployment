@@ -1,15 +1,9 @@
 #!/bin/bash
 
-STORE_NAME=$1
-REPO_NAME=$2
-GITHUB_TOKEN=$3
-SHOPIFY_API_VERSION=$4
-
-echo "STORE_NAME=${STORE_NAME}, REPO_NAME=${REPO_NAME}, SHOPIFY_API_VERSION=${SHOPIFY_API_VERSION}"
-
-THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
-
 function delete_inactive_themes() {
+    STORE_NAME=$1
+    THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
+
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep 'PR: ' | awk '{print $3}'`
     THEME_LIST=( $THEME_NAMES )
@@ -23,10 +17,10 @@ function delete_inactive_themes() {
             echo "Themes that will be deleted PR:${THEME} on ${STORE_NAME}"
             THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1` # | cut -d "e" -f 2
     
-            curl -d "{\"theme\":{\"id\": \"${THEME_ID}\", \"name\": \"${THEME}\"}}" \
-            -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
-            -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-            -H "Content-Type: application/json"  
+            # curl -d "{\"theme\":{\"id\": \"${THEME_ID}\", \"name\": \"${THEME}\"}}" \
+            # -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+            # -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
+            # -H "Content-Type: application/json"  
         fi
     done
 }
@@ -58,4 +52,11 @@ function get_branch_list(){
     fi         
 }
 
-delete_inactive_themes
+# delete_inactive_themes
+
+stores=( ${STORE_NAME} )
+for store in "${stores[@]}"
+do
+    echo "Running on store ${store}"  
+    delete_inactive_themes "${store}"
+done 
