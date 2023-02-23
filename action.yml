@@ -83,7 +83,8 @@ runs:
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }} 
         WORK_DIR: ${{ inputs.theme-files-location }}
       run: |
-         # if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
-            ${{ github.action_path }}/scripts/DeployMain.sh
-         # fi  
+          ${{ github.action_path }}/scripts/DeployMain.sh
       shell: bash  
+    # if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
+           
+         # fi  
