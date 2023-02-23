@@ -24,7 +24,6 @@ function delete_inactive_themes() {
         fi
     done
 }
-
 function get_branch_list(){
     PAYLOAD="query { \
         organization(login: \\\"SatelCreative\\\") {\
@@ -51,8 +50,6 @@ function get_branch_list(){
         exit 1
     fi         
 }
-
-# delete_inactive_themes
 
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"

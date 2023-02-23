@@ -58,7 +58,7 @@ deploy_pr_branch_or_tag() {
         echo "Redeploying theme"
         theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; 
     fi   
-    cd .. # do this for next store
+    cd .. # need to do this for next store
 }   
 
 function configure_theme(){
