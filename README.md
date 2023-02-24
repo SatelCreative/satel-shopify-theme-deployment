@@ -85,6 +85,7 @@ jobs:
             json: ${{ secrets.THEME_CONFIG_JSON }}
             
         - name: Deploy theme
+          id: theme-deploy
           uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
           with: 
             store-name: '<store-name(s)>'  
