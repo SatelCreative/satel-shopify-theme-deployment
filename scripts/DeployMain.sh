@@ -31,7 +31,7 @@ stores=( ${STORE_NAME} )
 i=0
 for store in "${stores[@]}"
 do
-  echo "Running on store ${store}" 
+  echo "Running deploy main on store ${store}" 
   ids=( ${MAIN_THEME_IDS} )
   deploy_main_branch "${store}" "${ids[i]}" 
   i=$((i+1))
