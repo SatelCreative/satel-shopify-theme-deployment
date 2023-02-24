@@ -2,10 +2,10 @@
 PREVIEW_LINKS=()
 
 deploy_pr_branch_or_tag() { 
+
     STORE_NAME=$1
     THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
 
-    echo ${STORE_NAME}
     if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
     then
         echo "WORK_DIR ${WORK_DIR}"
@@ -14,9 +14,9 @@ deploy_pr_branch_or_tag() {
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
-        THEME_NAME="TAG: ${TAG_NAME}"
+      THEME_NAME=$TAG_NAME
     else
-        THEME_NAME="PR: ${BRANCH_NAME}"
+      THEME_NAME=$BRANCH_NAME
     fi
 
     THEME_ID=" "
@@ -46,8 +46,8 @@ deploy_pr_branch_or_tag() {
     #echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
     echo $PREVIEW_LINK
-    PREVIEW_LINKS+=( "${PREVIEW_LINK}" )
-    #PREVIEW_LINKS+=( "${STORE_NAME}:${PREVIEW_LINK}" )
+    #PREVIEW_LINKS+=( "${PREVIEW_LINK}" )
+    PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     #echo "Running deploy command"
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
@@ -66,7 +66,7 @@ function configure_theme(){
 }
 
 function create_theme(){
-    curl -d "{\"theme\":{\"name\": \"${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
+    curl -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
         -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
         -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
@@ -75,10 +75,9 @@ function create_theme(){
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
-echo "Running on store ${store}"  
+echo "Running deploy PR or Tag on store ${store}"  
 deploy_pr_branch_or_tag "${store}"
 done 
 
-
 # These outputs are used in other steps/jobs via action.yml
-echo "::set-output name=preview_link::${PREVIEW_LINKS}" # to export all links do PREVIEW_LINKS[@]
+echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" # to export all links do PREVIEW_LINKS[@]
