@@ -39,7 +39,6 @@ inputs:
 outputs:
   preview-link:  # id of output
     description: 'Theme preview link'
-    #value:  ${{ toJSON(steps.deploy-pr.outputs.preview_link) }}
     value:  ${{ steps.deploy-pr.outputs.preview_link }}
 
 runs:

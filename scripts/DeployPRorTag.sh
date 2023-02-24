@@ -45,8 +45,6 @@ deploy_pr_branch_or_tag() {
 
     #echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
-    echo $PREVIEW_LINK
-    #PREVIEW_LINKS+=( "${PREVIEW_LINK}" )
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     #echo "Running deploy command"
@@ -80,4 +78,4 @@ deploy_pr_branch_or_tag "${store}"
 done 
 
 # These outputs are used in other steps/jobs via action.yml
-echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" # to export all links do PREVIEW_LINKS[@]
+echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" 

@@ -7,7 +7,7 @@ This centralized GitHub action deploys a theme to shopify admin
   uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
   with: 
     store-name: '<store-name>' # for multiple store '<store_name1 store_name2>'  
-    # exclude  .myshopfy.com part. 
+    # exclude the .myshopfy.com part. 
     theme-env: 'developtheme'
     copy-settings: true
     main-theme-id: "<theme-id>" # theme that's live on the dev stores, for multiple store '<theme-id-1> <theme-id-2>'
