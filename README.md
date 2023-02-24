@@ -57,6 +57,8 @@ on:
 jobs:
   deploy-theme:
     runs-on: self-hosted
+    outputs:
+      preview-link: ${{ steps.theme-deploy.outputs.preview-link }} # theme preview links, used to append PR description
     steps:
         - name: Checkout
           uses: actions/checkout@v2
@@ -95,4 +97,16 @@ jobs:
             theme-files-location: <folder-for-theme-files> 
             current-branch-name: ${{ env.BRANCH_NAME }}
             tag-name: ${{ env.TAG_NAME }} 
+
+  preview-link:
+    runs-on: self-hosted
+    needs: deploy-theme
+    steps:
+      - name: Add links in PR description
+        if: "${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/tags' }}"
+        uses: myposter-de/update-pr-description-async-action@1.2.11
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          prDescAppend: "${{ needs.deploy-theme.outputs.preview-link }}"
+          isTicketUpdate: false #true, for set jira link on pr-description           
 ```            
