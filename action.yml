@@ -1,0 +1,89 @@
+name: Satel shopify theme deployment
+description: Deploys theme(s) to shopify store(s)
+
+inputs:
+  store-name:
+    description: Name of the store
+    required: true 
+  theme-env:
+    description: Name of the environment for theme deployment
+    required: true 
+  copy-settings:
+    description: Parameter to check if the setting need to copy
+    required: false   
+    default: "false" 
+  main-theme-id:
+    description: ID of main theme
+    required: false  
+  repo-name:
+    description: Name of the current repo
+    required: true
+  github-token:
+    description: Token for graphl calls
+    required: true      
+  shopify-api-version:
+    description: Shopify api version
+    required: true
+  theme-files-location:
+    description: location of all the theme files 
+    required: false
+    default: None
+  current-branch-name: 
+    description: Provides current branch name 
+    required: false  
+  tag-name: 
+    description: Provides current tag name
+    required: false  
+
+
+outputs:
+  preview-link:  # id of output
+    description: 'Theme preview link'
+    value:  ${{ steps.deploy-pr.outputs.preview_link }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Delete Old Themes
+      env:
+        STORE_NAME: ${{ inputs.store-name }}
+        REPO_NAME: ${{ inputs.repo-name }} 
+        GITHUB_TOKEN: ${{ inputs.github-token }} 
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }} 
+        BRANCH_NAME: ${{ inputs.current-branch-name }} 
+        TAG_NAME: ${{ inputs.tag-name }}
+      run: |
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then
+          ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
+        fi   
+      shell: bash  
+
+    - name: Deploy a PR or a Tag
+      id: deploy-pr
+      env:
+        STORE_NAME: ${{ inputs.store-name }}
+        THEME_ENV: ${{ inputs.theme-env }}
+        COPY_SETTINGS: ${{ inputs.copy-settings }}
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+        WORK_DIR: ${{ inputs.theme-files-location }} 
+        BRANCH_NAME: ${{ inputs.current-branch-name }} 
+        TAG_NAME: ${{ inputs.tag-name }}
+      run: |
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
+          ${{ github.action_path }}/scripts/DeployPRorTag.sh
+        fi   
+      shell: bash  
+
+    - name: Deploy Main
+      env:  
+        STORE_NAME: ${{ inputs.store-name }}
+        BRANCH_NAME: ${{ inputs.current-branch-name }}
+        MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
+        THEME_ENV: ${{ inputs.theme-env }} 
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }} 
+        WORK_DIR: ${{ inputs.theme-files-location }}
+      run: |
+          if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
+            ${{ github.action_path }}/scripts/DeployMain.sh
+          fi  
+      shell: bash  
