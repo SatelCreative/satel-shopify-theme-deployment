@@ -17,10 +17,10 @@ inputs:
     required: false  
   repo-name:
     description: Name of the current repo
-    required: true
+    required: false
   github-token:
     description: Token for graphl calls
-    required: true      
+    required: false     
   shopify-api-version:
     description: Shopify api version
     required: true
