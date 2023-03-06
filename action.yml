@@ -27,14 +27,12 @@ inputs:
   theme-files-location:
     description: location of all the theme files 
     required: false
-    default: None
   current-branch-name: 
     description: Provides current branch name 
     required: false  
   tag-name: 
     description: Provides current tag name
     required: false  
-
 
 outputs:
   preview-link:  # id of output
