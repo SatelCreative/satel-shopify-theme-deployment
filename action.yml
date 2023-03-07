@@ -51,7 +51,7 @@ runs:
         BRANCH_NAME: ${{ inputs.current-branch-name }} 
         TAG_NAME: ${{ inputs.tag-name }}
       run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -z "${{ inputs.tag-name }}" ]]; then
           ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
         fi   
       shell: bash  
@@ -67,7 +67,7 @@ runs:
         BRANCH_NAME: ${{ inputs.current-branch-name }} 
         TAG_NAME: ${{ inputs.tag-name }}
       run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -z "${{ inputs.tag-name }}" ]]; then 
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
           ${{ github.action_path }}/scripts/DeployPRorTag.sh
         fi   
       shell: bash  
