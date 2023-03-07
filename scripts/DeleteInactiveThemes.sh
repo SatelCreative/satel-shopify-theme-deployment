@@ -54,6 +54,6 @@ function get_branch_list(){
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
-    echo "Running delete inactive themes on store ${store}"  
+    echo "====== Running delete inactive themes on store ${store} ======"  
     delete_inactive_themes "${store}"
 done 

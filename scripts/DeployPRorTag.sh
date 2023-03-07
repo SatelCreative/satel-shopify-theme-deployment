@@ -14,13 +14,13 @@ deploy_pr_branch_or_tag() {
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
-      THEME_NAME=$TAG_NAME
+        THEME_NAME=$TAG_NAME
     else
-      THEME_NAME=$BRANCH_NAME
+        THEME_NAME=$BRANCH_NAME
     fi
 
     THEME_ID=" "
-   
+
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "THEME_ID=${THEME_ID}"
     if [[ ! "${THEME_ID}" ]] 
@@ -73,7 +73,7 @@ function create_theme(){
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
-echo "Running deploy PR or Tag on store ${store}"  
+echo "====== Running deploy PR or Tag on store ${store} ====="  
 deploy_pr_branch_or_tag "${store}"
 done 
 
