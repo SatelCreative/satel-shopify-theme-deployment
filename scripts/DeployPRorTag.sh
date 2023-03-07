@@ -14,27 +14,27 @@ deploy_pr_branch_or_tag() {
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
-      THEME_NAME=$TAG_NAME
+        THEME_NAME=$TAG_NAME
     else
-      THEME_NAME=$BRANCH_NAME
+        THEME_NAME=$BRANCH_NAME
     fi
 
     THEME_ID=" "
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
-
+    echo "THEME_ID=${THEME_ID}"
     if [[ ! "${THEME_ID}" ]] 
     then
         # Theme doesnt exist, create it
         # Use api call instead of theme new as the latter creates a V1 theme
-        #echo "Creating theme"
+        echo "Creating theme"
         create_theme
         THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`  
         configure_theme # configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
     else
         # Theme exist, just configure it
-        #echo "Configuring theme"
+        echo "Configuring theme"
         configure_theme
     fi
 
@@ -43,11 +43,11 @@ deploy_pr_branch_or_tag() {
         theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live
     fi 
 
-    #echo "Generate PR preview links"
+    echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
-    #echo "Running deploy command"
+    echo "Running deploy command"
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
 
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
@@ -73,7 +73,7 @@ function create_theme(){
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
-echo "Running deploy PR or Tag on store ${store}"  
+echo "====== Running deploy PR or Tag on store ${store} ====="  
 deploy_pr_branch_or_tag "${store}"
 done 
 
