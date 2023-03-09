@@ -78,7 +78,7 @@ echo "====== Running deploy PR or Tag on store ${store} ====="
 deploy_pr_branch_or_tag "${store}"
 done 
 
-echo "THEME_ID=${THEME_ID}"
+echo "WHY doesnt this print " #"THEME_ID=${THEME_ID}"
 # These outputs are used in other steps/jobs via action.yml
 echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" 
 echo "::set-output name=theme_id::${THEME_ID}" 
