@@ -41,7 +41,10 @@ outputs:
   preview-link:  # id of output
     description: 'Theme preview link'
     value:  ${{ steps.deploy-pr.outputs.preview_link }}
-
+  theme_id:  
+    description: 'ID of theme created, used for lighthouse check'
+    value:  ${{ steps.deploy-pr.outputs.theme_id }}
+    
 runs:
   using: "composite"
   steps:
