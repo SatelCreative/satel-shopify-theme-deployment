@@ -17,6 +17,7 @@ This centralized GitHub action deploys a theme to shopify admin
     theme-files-location: <folder-for-theme-files> #same as work directory 
     current-branch-name: ${{ env.BRANCH_NAME }}
     tag-name: ${{ env.TAG_NAME }} 
+    org-name: '<github-organization-name>'
 ```
 
 Theme credentials can be stored as GitHub secrets as: 
@@ -91,13 +92,14 @@ jobs:
             store-name: '<store-name(s)>'  
             theme-env: 'developtheme'
             copy-settings: true
-            main-theme-id: "<theme-id(s)>" 
+            main-theme-id: '<theme-id(s)>' 
             repo-name: ${{ env.REPO_NAME }} 
             github-token: ${{ secrets.GITHUB_TOKEN }}
-            shopify-api-version: "<stable-shopify-api-version>"
+            shopify-api-version: '<stable-shopify-api-version>'
             theme-files-location: <folder-for-theme-files> 
             current-branch-name: ${{ env.BRANCH_NAME }}
             tag-name: ${{ env.TAG_NAME }} 
+            org-name: '<github-organization-name>'
 
   preview-link:
     runs-on: self-hosted

@@ -33,6 +33,9 @@ inputs:
   tag-name: 
     description: Provides current tag name
     required: false  
+  org-name:
+    description: Name of the github organization
+    required: true  
 
 outputs:
   preview-link:  # id of output
@@ -50,6 +53,7 @@ runs:
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }} 
         BRANCH_NAME: ${{ inputs.current-branch-name }} 
         TAG_NAME: ${{ inputs.tag-name }}
+        ORG_NAME: ${{ inputs.org-name }}
       run: |
         if [[ "${{ inputs.current-branch-name }}" != 'main' ]] && [[ -z "${{ inputs.tag-name }}" ]]; then
           ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 

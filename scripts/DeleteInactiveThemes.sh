@@ -26,7 +26,7 @@ function delete_inactive_themes() {
 }
 function get_branch_list(){
     PAYLOAD="query { \
-        organization(login: \\\"SatelCreative\\\") {\
+        organization(login: \\\"${ORG_NAME}\\\") {\
             repository(name: \\\"${REPO_NAME}\\\") {\
             refs(refPrefix: \\\"refs/heads/\\\", first: 100) {\
                 edges {\
