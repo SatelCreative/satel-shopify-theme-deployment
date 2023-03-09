@@ -1,5 +1,6 @@
 #!/bin/bash
 PREVIEW_LINKS=()
+THEME_ID=""
 
 deploy_pr_branch_or_tag() { 
 
@@ -19,7 +20,7 @@ deploy_pr_branch_or_tag() {
         THEME_NAME=$BRANCH_NAME
     fi
 
-    THEME_ID=" "
+    
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "THEME_ID=${THEME_ID}"
