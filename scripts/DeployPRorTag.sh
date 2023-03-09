@@ -1,5 +1,6 @@
 #!/bin/bash
 PREVIEW_LINKS=()
+THEME_IDS=()
 
 deploy_pr_branch_or_tag() { 
 
@@ -18,8 +19,6 @@ deploy_pr_branch_or_tag() {
     else
         THEME_NAME=$BRANCH_NAME
     fi
-
-    THEME_ID=" "
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "THEME_ID=${THEME_ID}"
@@ -49,7 +48,9 @@ deploy_pr_branch_or_tag() {
 
     echo "Running deploy command"
     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
-
+    
+    THEME_IDS+=("${THEME_ID}")
+    
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
     if [[ $STATUS1 != 0 ]]
     then 
@@ -77,5 +78,7 @@ echo "====== Running deploy PR or Tag on store ${store} ====="
 deploy_pr_branch_or_tag "${store}"
 done 
 
+echo "THEME_ID=${THEME_IDS[@]}"
 # These outputs are used in other steps/jobs via action.yml
 echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" 
+echo "::set-output name=theme_id::${THEME_IDS[@]}" 
