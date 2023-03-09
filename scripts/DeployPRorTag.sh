@@ -79,3 +79,4 @@ done
 
 # These outputs are used in other steps/jobs via action.yml
 echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" 
+echo "::set-output name=theme_id::${THEME_ID}" 
