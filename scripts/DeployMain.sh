@@ -23,7 +23,7 @@ function deploy_main_branch(){
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
   #Deploy to live
-  theme -e developtheme deploy --allow-live --ignored-file=config/settings_data.json    
+  theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json    
   cd ..
 }
 
