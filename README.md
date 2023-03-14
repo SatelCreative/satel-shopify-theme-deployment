@@ -8,12 +8,12 @@ This centralized GitHub action deploys a theme to shopify admin
   with: 
     store-name: '<store-name>' # for multiple store '<store_name1 store_name2>'  
     # exclude the .myshopfy.com part. 
-    theme-env: 'developtheme'
+    theme-env: '<environment_you_are_deploying_to>'
     copy-settings: true
-    main-theme-id: "<theme-id>" # theme that's live on the dev stores, for multiple store '<theme-id-1> <theme-id-2>'
+    main-theme-id: '<theme-id>' # theme that's live on the dev stores, for multiple store '<theme-id-1> <theme-id-2>'
     repo-name: ${{ env.REPO_NAME }} 
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    shopify-api-version: "<stable-shopify-api-version>" # format: 2022-10
+    shopify-api-version: '<stable-shopify-api-version>' # format: 2022-10
     theme-files-location: <folder-for-theme-files> #same as work directory 
     current-branch-name: ${{ env.BRANCH_NAME }}
     tag-name: ${{ env.TAG_NAME }} 
@@ -57,9 +57,10 @@ on:
           
 jobs:
   deploy-theme:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       preview-link: ${{ steps.theme-deploy.outputs.preview-link }} # theme preview links, used to append PR description
+      theme_id: ${{ steps.theme-deploy.outputs.theme_id }}
     steps:
         - name: Checkout
           uses: actions/checkout@v2
@@ -90,7 +91,7 @@ jobs:
           uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
           with: 
             store-name: '<store-name(s)>'  
-            theme-env: 'developtheme'
+            theme-env: '<environment>'
             copy-settings: true
             main-theme-id: '<theme-id(s)>' 
             repo-name: ${{ env.REPO_NAME }} 
