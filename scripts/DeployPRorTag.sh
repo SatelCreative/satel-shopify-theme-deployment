@@ -39,11 +39,13 @@ deploy_pr_branch_or_tag() {
 
     if [[ $COPY_SETTINGS == true ]]
     then   
+        echo "Copy settings"
         theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
     fi 
    
     # Return the status code of theme commands
     TOTAL=$((STATUS1 + STATUS2))
+    echo $TOTAL
     exit $TOTAL
 
     echo "Generate PR preview links"
