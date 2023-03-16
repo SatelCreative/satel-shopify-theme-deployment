@@ -65,7 +65,12 @@ deploy_pr_branch_or_tag() {
     if [[ $STATUS3 != 0 ]]
     then 
         echo "Redeploying theme"
-        theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV} 
+        theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
+        if [[ $STATUS4 != 0 ]]
+        then 
+            echo "Failing deployment"
+            exit $STATUS4 
+        fi  
     fi   
     cd .. # need to do this for next store
 }   
