@@ -14,7 +14,6 @@ function deploy_main_branch(){
   fi 
 
   theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS1=$?
-  exit $STATUS1
 
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
@@ -24,7 +23,17 @@ function deploy_main_branch(){
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
   #Deploy to live
-  theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json    
+  theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json; STATUS1=$?
+ 
+  
+  # Return the status code of theme commands
+  TOTAL=$((STATUS1 + STATUS2))
+  if [[ $TOTAL != 0 ]]
+    then 
+       echo "Failing deployment"
+       exit $TOTAL
+    fi 
+    
   cd ..
 }
 
