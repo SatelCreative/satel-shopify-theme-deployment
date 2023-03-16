@@ -45,9 +45,13 @@ deploy_pr_branch_or_tag() {
    
     # Return the status code of theme commands
     TOTAL=$((STATUS1 + STATUS2))
-    echo $TOTAL
-    exit $TOTAL
 
+    if [[ $TOTAL != 0 ]]
+    then 
+       echo "Failing deployment"
+       exit $TOTAL
+    fi 
+    
     echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
