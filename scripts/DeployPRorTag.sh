@@ -28,7 +28,7 @@ deploy_pr_branch_or_tag() {
         # Use api call instead of theme new as the latter creates a V1 theme
         echo "Creating theme"
         create_theme
-        THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`  
+        THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`
         configure_theme # configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
     else
@@ -39,29 +39,44 @@ deploy_pr_branch_or_tag() {
 
     if [[ $COPY_SETTINGS == true ]]
     then   
-        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live
+        echo "Copy settings"
+        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
     fi 
+   
+    # Return the status code of theme commands
+    TOTAL=$((STATUS1 + STATUS2))
 
+    if [[ $TOTAL != 0 ]]
+    then 
+       echo "Failing deployment"
+       exit $TOTAL
+    fi 
+    
     echo "Generate PR preview links"
     PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS1=$?   
+    theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS3=$?   
     
     THEME_IDS+=("${THEME_ID}")
     
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
-    if [[ $STATUS1 != 0 ]]
+    if [[ $STATUS3 != 0 ]]
     then 
         echo "Redeploying theme"
-        theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; 
+        theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
+        if [[ $STATUS4 != 0 ]]
+        then 
+            echo "Failing deployment"
+            exit $STATUS4 
+        fi  
     fi   
     cd .. # need to do this for next store
 }   
 
 function configure_theme(){
-    theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}
+    theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
 }
 
 function create_theme(){

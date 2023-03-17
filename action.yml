@@ -58,7 +58,7 @@ runs:
         TAG_NAME: ${{ inputs.tag-name }}
         ORG_NAME: ${{ inputs.org-name }}
       run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] && [[ -z "${{ inputs.tag-name }}" ]]; then
+        if [[ -z "${{ inputs.tag-name }}" ]]; then
           ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
         fi   
       shell: bash  
