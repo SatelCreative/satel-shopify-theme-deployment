@@ -18,6 +18,7 @@ This centralized GitHub action deploys a theme to shopify admin
     current-branch-name: ${{ env.BRANCH_NAME }}
     tag-name: ${{ env.TAG_NAME }} 
     org-name: '<github-organization-name>'
+    run-id: <integer>  # To copy setting from main the first time a PR is created, if the settings doesn't exist on github 
 ```
 
 Theme credentials can be stored as GitHub secrets as: 

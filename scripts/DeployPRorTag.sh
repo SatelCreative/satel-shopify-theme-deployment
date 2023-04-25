@@ -37,7 +37,7 @@ deploy_pr_branch_or_tag() {
         configure_theme
     fi
 
-    if [[ $COPY_SETTINGS == true ]]
+    if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID]]
     then   
         echo "Copy settings"
         theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?

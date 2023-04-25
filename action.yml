@@ -36,6 +36,9 @@ inputs:
   org-name:
     description: Name of the github organization
     required: false 
+  run-id:
+    description: Number of times a PR build has ran
+    required: false 
 
 outputs:
   preview-link:  # id of output
@@ -73,6 +76,7 @@ runs:
         WORK_DIR: ${{ inputs.theme-files-location }} 
         BRANCH_NAME: ${{ inputs.current-branch-name }} 
         TAG_NAME: ${{ inputs.tag-name }}
+        RUN_ID: ${{ inputs.run-id }}
       run: |
         if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
           ${{ github.action_path }}/scripts/DeployPRorTag.sh
