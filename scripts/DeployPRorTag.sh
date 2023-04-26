@@ -37,11 +37,11 @@ deploy_pr_branch_or_tag() {
         configure_theme
     fi
 
-    if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID]]
-    then   
+    if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
         echo "Copy settings"
-        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
-    fi 
+        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
+    fi
+
    
     # Return the status code of theme commands
     TOTAL=$((STATUS1 + STATUS2))
