@@ -22,16 +22,23 @@ function deploy_main_branch(){
         -X PUT "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
-  #Deploy to live
-  theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?
- 
+
+  # Deploy to live
+    if [[ $COPY_SETTINGS == true ]]  
+    then   
+        echo "ignoring current PR's settings"
+        theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json; STATUS1=$? 
+    else
+          theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
+    fi
+
   
   # Return the status code of theme commands
   TOTAL=$((STATUS1 + STATUS2))
   if [[ $TOTAL != 0 ]]
     then 
-       echo "Failing deployment"
-       exit $TOTAL
+        echo "Failing deployment"
+        exit $TOTAL
     fi 
     
   cd ..
