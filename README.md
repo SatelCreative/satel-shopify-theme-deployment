@@ -42,7 +42,7 @@ In order to convert the theme secrets to JSON use the following action:
 Combining above two with generating environment variables, the complete workflow would look like: 
 
 ```YAML
-name: deploy theme
+name: Deploy theme
 
 on:
   pull_request:
@@ -80,6 +80,10 @@ jobs:
         - name: Get repo name
           run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
           
+	- name: Get run id
+          if: ${{ github.event_name == 'pull_request' &&  github.event.action == 'opened'}}
+          run: echo "RUN_ID=1" >> $GITHUB_ENV 
+	  
         - name: Convert secrets to JSON
           id: create-json
           uses: jsdaniell/create-json@1.1.2
@@ -102,6 +106,7 @@ jobs:
             current-branch-name: ${{ env.BRANCH_NAME }}
             tag-name: ${{ env.TAG_NAME }} 
             org-name: '<github-organization-name>'
+	    run-id: ${{ env.RUN_ID }} 
 
   preview-link:
     runs-on: self-hosted
