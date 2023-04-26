@@ -79,7 +79,7 @@ jobs:
 
         - name: Get repo name
           run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
-	  
+          
         - name: Convert secrets to JSON
           id: create-json
           uses: jsdaniell/create-json@1.1.2
