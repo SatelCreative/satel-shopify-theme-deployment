@@ -26,10 +26,10 @@ function deploy_main_branch(){
   # Deploy to live
     if [[ $COPY_SETTINGS == true ]]  
     then   
-        echo "ignoring current PR's settings"
+        echo "======= Ignoring merged PR's settings ========"
         theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json; STATUS1=$? 
     else
-          theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
+        theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
     fi
 
   
