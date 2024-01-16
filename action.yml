@@ -23,7 +23,8 @@ inputs:
     required: false
   shopify-api-version:
     description: Shopify api version
-    required: true
+    required: false
+    default: "2024-01"
   theme-files-location:
     description: location of all the theme files
     required: false
