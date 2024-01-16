@@ -95,5 +95,5 @@ done
 
 echo "THEME_ID=${THEME_IDS[@]}"
 # These outputs are used in other steps/jobs via action.yml
-echo "::set-output name=preview_link::${PREVIEW_LINKS[@]}" 
-echo "::set-output name=theme_id::${THEME_IDS[@]}" 
+echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
+echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
