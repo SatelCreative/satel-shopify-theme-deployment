@@ -109,14 +109,13 @@ jobs:
             run-id: ${{ env.RUN_ID }} 
 
   preview-link:
-    runs-on: self-hosted
     needs: deploy-theme
+    runs-on: ubuntu-latest
+    if: ${{ github.ref != 'refs/heads/main' && !contains(github.ref, 'refs/tags/') }}
     steps:
       - name: Add links in PR description
-        if: "${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/tags' }}"
-        uses: myposter-de/update-pr-description-async-action@1.2.11
+        uses: SatelCreative/satel-update-pr-body@1.0.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          prDescAppend: "${{ needs.deploy-theme.outputs.preview-link }}"
-          isTicketUpdate: false #true, for set jira link on           
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          body: "## ${{ needs.deploy-theme.outputs.preview-link }}"            
 ```            
