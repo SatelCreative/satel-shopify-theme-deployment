@@ -27,7 +27,7 @@ function deploy_main_branch(){
     if [[ $COPY_SETTINGS == true ]]  
     then   
         echo "======= Ignoring merged PR's settings ========"
-        theme -e ${THEME_ENV} deploy --allow-live --ignored-file=*/*.json; STATUS1=$? 
+        theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json; STATUS1=$? 
     else
         theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
     fi
