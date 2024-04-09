@@ -24,15 +24,8 @@ function deploy_main_branch(){
         -H "Content-Type: application/json" 
 
   # Deploy to live
-    if [[ $COPY_SETTINGS == true ]]  
-    then   
-        echo "======= Ignoring merged PR's settings ========"
-        theme -e ${THEME_ENV} deploy --allow-live --ignored-file=config/settings_data.json; STATUS1=$? 
-    else
-        theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
-    fi
+    theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
 
-  
   # Return the status code of theme commands
   TOTAL=$((STATUS1 + STATUS2))
   if [[ $TOTAL != 0 ]]
