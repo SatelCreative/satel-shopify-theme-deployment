@@ -16,10 +16,10 @@ function deploy_main_branch(){
 
   theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS1=$?
 
-  if [[ -n $PRD_PARAMETER ]] 
-  then
-      $PUBLISH_TEXT="DO NOT PUBLISH"
-  fi 
+  if [[ -n $PRD_PARAMETER ]]; then
+      PUBLISH_TEXT="DO NOT PUBLISH"
+  fi
+  
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
   #This will rename the theme
