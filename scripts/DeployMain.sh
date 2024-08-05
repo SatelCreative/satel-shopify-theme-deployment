@@ -18,7 +18,7 @@ function deploy_main_branch(){
 
   if [[ -n $PRD_PARAMETER ]] 
   then
-      echo ${PUBLISH_TEXT}="DO NOT PUBLISH"
+      echo $PUBLISH_TEXT="DO NOT PUBLISH"
   fi 
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
