@@ -40,6 +40,9 @@ inputs:
   run-id:
     description: Number of times a PR build has ran
     required: false
+  is-prd:
+    description: Check if the theme is deploying on PRD store 
+    required: false
 
 outputs:
   preview-link: # id of output
@@ -93,6 +96,7 @@ runs:
         THEME_ENV: ${{ inputs.theme-env }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
         WORK_DIR: ${{ inputs.theme-files-location }}
+        PRD_PARAMETER: ${{ inputs.is-prd }}
       run: |
         if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
           ${{ github.action_path }}/scripts/DeployMain.sh
