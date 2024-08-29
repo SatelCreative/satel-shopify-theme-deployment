@@ -14,16 +14,23 @@ function delete_inactive_themes() {
     for THEME in "${THEME_LIST[@]}"
     do    
         if [[ ! "${BRANCH_NAMES[*]}" =~ "${THEME}" ]]; then
-            echo "Themes that will be deleted PR:${THEME} on ${STORE_NAME}"
-            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1` # | cut -d "e" -f 2
+            echo "Theme that will be deleted PR:${THEME} on ${STORE_NAME}"
+            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
     
-            curl -d "{\"theme\":{\"id\": \"${THEME_ID}\", \"name\": \"${THEME}\"}}" \
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\", \"name\": \"${THEME}\"}}" \
             -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-            -H "Content-Type: application/json"  
+            -H "Content-Type: application/json")
+
+            if [[ $RESPONSE == "200" ]]; then
+                echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
+            else
+                echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${RESPONSE}"
+            fi
         fi
     done
 }
+
 function get_branch_list(){
     PAYLOAD="query { \
         organization(login: \\\"${ORG_NAME}\\\") {\
@@ -56,4 +63,4 @@ for store in "${stores[@]}"
 do
     echo "====== Running delete inactive themes on store ${store} ======"  
     delete_inactive_themes "${store}"
-done 
+done
