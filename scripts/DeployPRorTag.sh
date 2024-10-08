@@ -52,7 +52,7 @@ deploy_pr_branch_or_tag() {
        echo "Generate PR preview links"
        PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
        PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
-       echo "Failing deployment"
+       echo "Failing deployment 1"
        exit $TOTAL
     fi 
     
@@ -72,7 +72,11 @@ deploy_pr_branch_or_tag() {
         theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
         if [[ $STATUS4 != 0 ]]
         then 
-            echo "Failing deployment"
+            # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
+            echo "Generate PR preview links"
+            PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
+            PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
+            echo "Failing deployment 2"
             exit $STATUS4 
         fi  
     fi   
