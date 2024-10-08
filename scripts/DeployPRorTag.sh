@@ -1,5 +1,4 @@
 #!/bin/bash
-PREVIEW_LINK=''
 PREVIEW_LINKS=()
 THEME_IDS=()
 
