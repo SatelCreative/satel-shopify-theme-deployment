@@ -81,8 +81,6 @@ deploy_pr_branch_or_tag() {
 
             # These outputs are used in other steps/jobs via action.yml
             echo "THEME_ID=${THEME_IDS[@]}"
-            echo "Bottom PREVIEW_LINK $PREVIEW_LINK"
-            echo "Bottom PREVIEW_LINKSSS ${PREVIEW_LINKS[@]}"
             echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
             echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
 
@@ -113,7 +111,5 @@ done
 
 echo "THEME_ID=${THEME_IDS[@]}"
 # These outputs are used in other steps/jobs via action.yml
-echo "Bottom PREVIEW_LINK $PREVIEW_LINK"
-echo "Bottom PREVIEW_LINKSSS ${PREVIEW_LINKS[@]}"
 echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
 echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
