@@ -75,7 +75,7 @@ deploy_pr_branch_or_tag() {
         then 
             # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
             echo "Generate PR preview links"
-            PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
+            #PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
             PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
             # These outputs are used in other steps/jobs via action.yml
