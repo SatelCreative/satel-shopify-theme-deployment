@@ -77,7 +77,6 @@ deploy_pr_branch_or_tag() {
             echo "Generate PR preview links"
             PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
             PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
-            echo "PREVIEW_LINK $PREVIEW_LINK"
             echo "Failing deployment 2"
             exit $STATUS4 
         fi  
@@ -105,5 +104,6 @@ done
 
 echo "THEME_ID=${THEME_IDS[@]}"
 # These outputs are used in other steps/jobs via action.yml
+echo "Bottom PREVIEW_LINK $PREVIEW_LINK"
 echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
 echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
