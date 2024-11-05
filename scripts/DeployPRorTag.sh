@@ -1,7 +1,7 @@
 #!/bin/bash
 PREVIEW_LINKS=()
 THEME_IDS=()
-
+cat config.yml
 echo "DEUBGGGG"
 echo "THEME_NAME $BRANCH_NAME"
 ls
