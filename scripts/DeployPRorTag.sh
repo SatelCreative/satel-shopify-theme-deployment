@@ -5,7 +5,7 @@ THEME_IDS=()
 deploy_pr_branch_or_tag() { 
 
     STORE_NAME=$1
-    THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
+    THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' config.json | grep -o '[^"]*$'`
 
     if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
     then
