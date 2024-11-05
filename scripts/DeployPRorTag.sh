@@ -97,7 +97,7 @@ function create_theme(){
          -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
          -H "Content-Type: application/json")
     
-    echo "$response"
+    echo "RESPONSE $response"
 
 }
 
