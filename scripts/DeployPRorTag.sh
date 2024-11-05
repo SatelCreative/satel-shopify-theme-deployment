@@ -23,6 +23,7 @@ deploy_pr_branch_or_tag() {
         THEME_NAME=$TAG_NAME
     else
         THEME_NAME=$BRANCH_NAME
+        echo "THEME_NAME $BRANCH_NAME"
     fi
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
