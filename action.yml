@@ -74,22 +74,22 @@ runs:
     #     fi
     #   shell: bash
 
-    # - name: Deploy a PR or a Tag
-    #   id: deploy-pr
-    #   env:
-    #     STORE_NAME: ${{ inputs.store-name }}
-    #     THEME_ENV: ${{ inputs.theme-env }}
-    #     COPY_SETTINGS: ${{ inputs.copy-settings }}
-    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-    #     WORK_DIR: ${{ inputs.theme-files-location }}
-    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
-    #     TAG_NAME: ${{ inputs.tag-name }}
-    #     RUN_ID: ${{ inputs.run-id }}
-    #   run: |
-    #     if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
-    #       ${{ github.action_path }}/scripts/DeployPRorTag.sh
-    #     fi
-    #   shell: bash
+    - name: Deploy a PR or a Tag
+      id: deploy-pr
+      env:
+        STORE_NAME: ${{ inputs.store-name }}
+        THEME_ENV: ${{ inputs.theme-env }}
+        COPY_SETTINGS: ${{ inputs.copy-settings }}
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+        WORK_DIR: ${{ inputs.theme-files-location }}
+        BRANCH_NAME: ${{ inputs.current-branch-name }}
+        TAG_NAME: ${{ inputs.tag-name }}
+        RUN_ID: ${{ inputs.run-id }}
+      run: |
+        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
+          ${{ github.action_path }}/scripts/DeployPRorTag.sh
+        fi
+      shell: bash
 
     # - name: Deploy Main
     #   env:
