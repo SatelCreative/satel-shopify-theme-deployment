@@ -3,6 +3,7 @@ PREVIEW_LINKS=()
 THEME_IDS=()
 
 echo "DEUBGGGG"
+echo "THEME_NAME $BRANCH_NAME"
 ls
 dir
 
