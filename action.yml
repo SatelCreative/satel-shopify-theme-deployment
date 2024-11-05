@@ -55,50 +55,53 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Delete Old Themes
-      env:
-        STORE_NAME: ${{ inputs.store-name }}
-        REPO_NAME: ${{ inputs.repo-name }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-        BRANCH_NAME: ${{ inputs.current-branch-name }}
-        TAG_NAME: ${{ inputs.tag-name }}
-        ORG_NAME: ${{ inputs.org-name }}
-      run: |
-        if [[ -z "${{ inputs.tag-name }}" ]]; then
-          ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
-        fi
-      shell: bash
+    - name: Debug
+      run: echo ${{ inputs.current-branch-name }}
+      
+    # - name: Delete Old Themes
+    #   env:
+    #     STORE_NAME: ${{ inputs.store-name }}
+    #     REPO_NAME: ${{ inputs.repo-name }}
+    #     GITHUB_TOKEN: ${{ inputs.github-token }}
+    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
+    #     TAG_NAME: ${{ inputs.tag-name }}
+    #     ORG_NAME: ${{ inputs.org-name }}
+    #   run: |
+    #     if [[ -z "${{ inputs.tag-name }}" ]]; then
+    #       ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
+    #     fi
+    #   shell: bash
 
-    - name: Deploy a PR or a Tag
-      id: deploy-pr
-      env:
-        STORE_NAME: ${{ inputs.store-name }}
-        THEME_ENV: ${{ inputs.theme-env }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
-        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-        WORK_DIR: ${{ inputs.theme-files-location }}
-        BRANCH_NAME: ${{ inputs.current-branch-name }}
-        TAG_NAME: ${{ inputs.tag-name }}
-        RUN_ID: ${{ inputs.run-id }}
-      run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
-          ${{ github.action_path }}/scripts/DeployPRorTag.sh
-        fi
-      shell: bash
+    # - name: Deploy a PR or a Tag
+    #   id: deploy-pr
+    #   env:
+    #     STORE_NAME: ${{ inputs.store-name }}
+    #     THEME_ENV: ${{ inputs.theme-env }}
+    #     COPY_SETTINGS: ${{ inputs.copy-settings }}
+    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+    #     WORK_DIR: ${{ inputs.theme-files-location }}
+    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
+    #     TAG_NAME: ${{ inputs.tag-name }}
+    #     RUN_ID: ${{ inputs.run-id }}
+    #   run: |
+    #     if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
+    #       ${{ github.action_path }}/scripts/DeployPRorTag.sh
+    #     fi
+    #   shell: bash
 
-    - name: Deploy Main
-      env:
-        STORE_NAME: ${{ inputs.store-name }}
-        BRANCH_NAME: ${{ inputs.current-branch-name }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
-        MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
-        THEME_ENV: ${{ inputs.theme-env }}
-        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-        WORK_DIR: ${{ inputs.theme-files-location }}
-        PRD_PARAMETER: ${{ inputs.is-prd }}
-      run: |
-        if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
-          ${{ github.action_path }}/scripts/DeployMain.sh
-        fi
-      shell: bash
+    # - name: Deploy Main
+    #   env:
+    #     STORE_NAME: ${{ inputs.store-name }}
+    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
+    #     COPY_SETTINGS: ${{ inputs.copy-settings }}
+    #     MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
+    #     THEME_ENV: ${{ inputs.theme-env }}
+    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+    #     WORK_DIR: ${{ inputs.theme-files-location }}
+    #     PRD_PARAMETER: ${{ inputs.is-prd }}
+    #   run: |
+    #     if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
+    #       ${{ github.action_path }}/scripts/DeployMain.sh
+    #     fi
+    #   shell: bash
