@@ -57,6 +57,7 @@ runs:
   steps:
     - name: Debug
       run: echo ${{ inputs.current-branch-name }}
+      shell: bash
       
     # - name: Delete Old Themes
     #   env:
