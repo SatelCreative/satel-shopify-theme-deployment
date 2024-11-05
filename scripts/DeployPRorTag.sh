@@ -27,6 +27,7 @@ deploy_pr_branch_or_tag() {
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "THEME_ID=${THEME_ID}"
+    
     if [[ ! "${THEME_ID}" ]] 
     then
         # Theme doesnt exist, create it
@@ -91,10 +92,13 @@ function configure_theme(){
 }
 
 function create_theme(){
-    curl -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-        -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
-        -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
-        -H "Content-Type: application/json" 
+    response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
+         -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+         -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
+         -H "Content-Type: application/json")
+    
+    echo "$response"
+
 }
 
 stores=( ${STORE_NAME} )
