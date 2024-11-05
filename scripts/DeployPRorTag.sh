@@ -2,6 +2,10 @@
 PREVIEW_LINKS=()
 THEME_IDS=()
 
+echo "DEUBGGGG"
+ls
+dir
+
 deploy_pr_branch_or_tag() { 
 
     STORE_NAME=$1
