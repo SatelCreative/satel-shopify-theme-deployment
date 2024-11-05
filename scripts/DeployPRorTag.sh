@@ -34,7 +34,14 @@ deploy_pr_branch_or_tag() {
         # Use api call instead of theme new as the latter creates a V1 theme
         echo "Creating theme"
         create_theme
-        THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`
+        THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
+            -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+            -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
+            -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
+    
+        echo "$THEME_ID"
+
+#`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`
         configure_theme # configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
     else
