@@ -22,7 +22,7 @@ deploy_pr_branch_or_tag() {
         echo "THEME_NAME $BRANCH_NAME"
     fi
 
-    THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
+    THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "THEME_ID=${THEME_ID}"
     
     if [[ ! "${THEME_ID}" ]] 
@@ -67,7 +67,7 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    #sed -i '/uat:/,/store:/s/theme_id: .*/theme_id: '"$THEME_ID"'/' config.yml
+    sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
     cat config.yml
     theme -e uat deploy; STATUS3=$?   
     
