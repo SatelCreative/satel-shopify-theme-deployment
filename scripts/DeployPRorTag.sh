@@ -60,14 +60,15 @@ deploy_pr_branch_or_tag() {
     then 
        echo "Failing deployment 1"
        exit $TOTAL
-    fi 
+    fi
+
+    sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
     
     echo "Generate PR preview links"
-    PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print \$3}'`
+    PREVIEW_LINK=`theme -e uat open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print \$3}'`
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
     cat config.yml
     theme -e uat deploy; STATUS3=$?   
     
