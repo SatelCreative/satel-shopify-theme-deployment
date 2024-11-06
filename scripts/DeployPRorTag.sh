@@ -32,7 +32,7 @@ deploy_pr_branch_or_tag() {
         echo "Creating theme"
         create_theme
         THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-            -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+            -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
             -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
     
@@ -78,7 +78,7 @@ deploy_pr_branch_or_tag() {
     # if [[ $STATUS3 != 0 ]]
     # then 
     #     echo "Redeploying theme"
-    #     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
+    #     theme -e uat deploy; STATUS4=$?
     #     if [[ $STATUS4 != 0 ]]
     #     then 
     #         # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
@@ -100,7 +100,7 @@ deploy_pr_branch_or_tag() {
 
 function create_theme(){
     response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-         -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+         -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
          -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
          -H "Content-Type: application/json")
     
