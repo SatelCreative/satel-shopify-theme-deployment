@@ -67,7 +67,7 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    sed -i '/uat:/,/store:/s/theme_id: .*/theme_id: '"$THEME_ID"'/' config.yml
+    #sed -i '/uat:/,/store:/s/theme_id: .*/theme_id: '"$THEME_ID"'/' config.yml
     cat config.yml
     theme -e uat deploy; STATUS3=$?   
     
