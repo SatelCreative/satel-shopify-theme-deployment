@@ -68,6 +68,7 @@ deploy_pr_branch_or_tag() {
 
     echo "Running deploy command"
     sed -i '/uat:/,/store:/s/theme_id: .*/theme_id: '"$THEME_ID"'/' config.yml
+    cat config.yml
     theme -e uat deploy; STATUS3=$?   
     
     THEME_IDS+=("${THEME_ID}")
