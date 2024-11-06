@@ -12,7 +12,7 @@ deploy_pr_branch_or_tag() {
         cd $WORK_DIR
     fi  
     
-    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml.example | sed 's/.*password:\s*//'`
+    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
