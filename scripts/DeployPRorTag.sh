@@ -1,15 +1,11 @@
 #!/bin/bash
 PREVIEW_LINKS=()
 THEME_IDS=()
-cat config.yml
-echo "DEUBGGGG"
-echo "THEME_NAME $BRANCH_NAME"
-ls
-dir
 
 deploy_pr_branch_or_tag() { 
 
     STORE_NAME=$1
+    
     if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
     then
         echo "WORK_DIR ${WORK_DIR}"
@@ -17,7 +13,6 @@ deploy_pr_branch_or_tag() {
     fi  
     
     THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml.example | sed 's/.*password:\s*//'`
-    #`grep -o '"'${STORE_NAME}'": "[^"]*' config.yml | grep -o '[^"]*$'`   
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
@@ -43,8 +38,8 @@ deploy_pr_branch_or_tag() {
     
         echo "$THEME_ID"
 
-#`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`
-        configure_theme # configure once again before deployment to genearate config.yml as it's needed for theme deploy
+        configure_theme 
+        #configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
     else
         # Theme exist, just configure it
