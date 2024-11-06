@@ -49,7 +49,7 @@ deploy_pr_branch_or_tag() {
 
     if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
         echo "Copy settings"
-        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
+        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
     fi
 
 
@@ -63,7 +63,7 @@ deploy_pr_branch_or_tag() {
     fi 
     
     echo "Generate PR preview links"
-    PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}.myshopify.com" | awk 'END {print \$3}'`
+    PREVIEW_LINK=`theme open --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"  --env ${THEME_ENV} -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print \$3}'`
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
@@ -77,7 +77,7 @@ deploy_pr_branch_or_tag() {
     # if [[ $STATUS3 != 0 ]]
     # then 
     #     echo "Redeploying theme"
-    #     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
+    #     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
     #     if [[ $STATUS4 != 0 ]]
     #     then 
     #         # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
@@ -94,7 +94,7 @@ deploy_pr_branch_or_tag() {
 }   
 
 # function configure_theme(){
-#     theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
+#     theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
 # }
 
 function create_theme(){
