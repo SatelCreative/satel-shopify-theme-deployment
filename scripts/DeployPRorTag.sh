@@ -38,13 +38,13 @@ deploy_pr_branch_or_tag() {
     
         echo "$THEME_ID"
 
-        configure_theme 
+        #configure_theme 
         #configure once again before deployment to genearate config.yml as it's needed for theme deploy
 
-    else
-        # Theme exist, just configure it
-        echo "Configuring theme"
-        configure_theme
+    # else
+    #     # Theme exist, just configure it
+    #     echo "Configuring theme"
+    #     configure_theme
     fi
 
     if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
@@ -67,33 +67,33 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS3=$?   
+    theme -e uat deploy; STATUS3=$?   
     
     THEME_IDS+=("${THEME_ID}")
     
     # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
-    if [[ $STATUS3 != 0 ]]
-    then 
-        echo "Redeploying theme"
-        theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
-        if [[ $STATUS4 != 0 ]]
-        then 
-            # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
-            # These outputs are used in other steps/jobs via action.yml
-            echo "THEME_ID=${THEME_IDS[@]}"
-            echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
-            echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
+    # if [[ $STATUS3 != 0 ]]
+    # then 
+    #     echo "Redeploying theme"
+    #     theme deploy --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID}  --env ${THEME_ENV}; STATUS4=$?
+    #     if [[ $STATUS4 != 0 ]]
+    #     then 
+    #         # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
+    #         # These outputs are used in other steps/jobs via action.yml
+    #         echo "THEME_ID=${THEME_IDS[@]}"
+    #         echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
+    #         echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
 
-            echo "Failing deployment 2"
-            exit $STATUS4 
-        fi  
-    fi   
+    #         echo "Failing deployment 2"
+    #         exit $STATUS4 
+    #     fi  
+    # fi   
     cd .. # need to do this for next store
 }   
 
-function configure_theme(){
-    theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
-}
+# function configure_theme(){
+#     theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
+# }
 
 function create_theme(){
     response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
