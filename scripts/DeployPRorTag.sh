@@ -44,7 +44,6 @@ deploy_pr_branch_or_tag() {
         theme -e uat download  config/settings_data.json --live; STATUS1=$?
     fi
 
-
     # Return the status code of theme commands
     TOTAL=$((STATUS1 + STATUS2))
 
