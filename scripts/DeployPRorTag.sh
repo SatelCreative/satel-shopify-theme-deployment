@@ -61,7 +61,6 @@ deploy_pr_branch_or_tag() {
        echo "Failing deployment 1"
        exit $TOTAL
     fi
-
     sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
     
     echo "Generate PR preview links"
@@ -69,7 +68,7 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
 
     echo "Running deploy command"
-    cat config.yml
+
     theme -e uat deploy; STATUS3=$?   
     
     THEME_IDS+=("${THEME_ID}")
@@ -115,7 +114,7 @@ echo "====== Running deploy PR or Tag on store ${store} ====="
 deploy_pr_branch_or_tag "${store}"
 done 
 
-echo "THEME_ID=${THEME_IDS[@]}"
+
 # These outputs are used in other steps/jobs via action.yml
 echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
 echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
