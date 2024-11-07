@@ -23,7 +23,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
-    echo "THEME_ID=${THEME_ID}"
+    echo "Existing THEME ID=${THEME_ID}"
     
     if [[ ! "${THEME_ID}" ]] 
     then
@@ -36,7 +36,7 @@ deploy_pr_branch_or_tag() {
             -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
     
-        echo "$THEME_ID"
+        echo "Created theme id=$THEME_ID"
     fi
 
     if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
@@ -93,8 +93,6 @@ function create_theme(){
     
     echo "RESPONSE $response"
 
-}
-
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
@@ -102,6 +100,7 @@ echo "====== Running deploy PR or Tag on store ${store} ====="
 deploy_pr_branch_or_tag "${store}"
 done 
 
+echo "THEME IDS=${THEME_IDS[@]}"
 
 # These outputs are used in other steps/jobs via action.yml
 echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
