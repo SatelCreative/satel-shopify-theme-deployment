@@ -37,19 +37,11 @@ deploy_pr_branch_or_tag() {
             -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
     
         echo "$THEME_ID"
-
-        #configure_theme 
-        #configure once again before deployment to genearate config.yml as it's needed for theme deploy
-
-    # else
-    #     # Theme exist, just configure it
-    #     echo "Configuring theme"
-    #     configure_theme
     fi
 
     if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
         echo "Copy settings"
-        theme download --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --env ${THEME_ENV} config/settings_data.json --live; STATUS1=$?
+        theme -e uat download  config/settings_data.json --live; STATUS1=$?
     fi
 
 
@@ -73,29 +65,25 @@ deploy_pr_branch_or_tag() {
     
     THEME_IDS+=("${THEME_ID}")
     
-    # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
-    # if [[ $STATUS3 != 0 ]]
-    # then 
-    #     echo "Redeploying theme"
-    #     theme -e uat deploy; STATUS4=$?
-    #     if [[ $STATUS4 != 0 ]]
-    #     then 
-    #         # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
-    #         # These outputs are used in other steps/jobs via action.yml
-    #         echo "THEME_ID=${THEME_IDS[@]}"
-    #         echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
-    #         echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
+    ## To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
+    if [[ $STATUS3 != 0 ]]
+    then 
+        echo "Re-deploying theme"
+        theme -e uat deploy; STATUS4=$?
+        if [[ $STATUS4 != 0 ]]
+        then 
+            # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
+            # These outputs are used in other steps/jobs via action.yml
+            echo "THEME_ID=${THEME_IDS[@]}"
+            echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
+            echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
 
-    #         echo "Failing deployment 2"
-    #         exit $STATUS4 
-    #     fi  
-    # fi   
+            echo "Failing deployment 2"
+            exit $STATUS4 
+        fi  
+    fi   
     cd .. # need to do this for next store
 }   
-
-# function configure_theme(){
-#     theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS2=$?
-# }
 
 function create_theme(){
     response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
