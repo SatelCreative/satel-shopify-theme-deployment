@@ -23,7 +23,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
-    echo "Existing THEME ID=${THEME_ID}"
+    echo "Existing THEME_ID=${THEME_ID}"
     
     if [[ ! "${THEME_ID}" ]] 
     then
@@ -36,13 +36,14 @@ deploy_pr_branch_or_tag() {
             -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
     
-        echo "Created theme id=$THEME_ID"
+        echo "Created theme id=${THEME_ID}"
     fi
 
     if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
         echo "Copy settings"
         theme -e uat download  config/settings_data.json --live; STATUS1=$?
     fi
+
 
     # Return the status code of theme commands
     TOTAL=$((STATUS1 + STATUS2))
@@ -64,7 +65,7 @@ deploy_pr_branch_or_tag() {
     
     THEME_IDS+=("${THEME_ID}")
     
-    ## To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
+    # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
     if [[ $STATUS3 != 0 ]]
     then 
         echo "Re-deploying theme"
@@ -92,6 +93,8 @@ function create_theme(){
     
     echo "RESPONSE $response"
 
+}
+
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
 do
@@ -99,8 +102,7 @@ echo "====== Running deploy PR or Tag on store ${store} ====="
 deploy_pr_branch_or_tag "${store}"
 done 
 
-echo "THEME IDS=${THEME_IDS[@]}"
-
+echo "THEME_IDs=${THEME_IDS[@]}"
 # These outputs are used in other steps/jobs via action.yml
 echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
 echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
