@@ -9,6 +9,9 @@ function delete_inactive_themes() {
         cd $WORK_DIR
     fi  
 
+    pwd 
+    ls
+
     THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
