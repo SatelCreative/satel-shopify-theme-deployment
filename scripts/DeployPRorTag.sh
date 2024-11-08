@@ -83,7 +83,7 @@ deploy_pr_branch_or_tag() {
 #     #     fi  
 #     # fi   
 #     cd .. # need to do this for next store
-# }   
+}   
 
 function create_theme(){
     response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
