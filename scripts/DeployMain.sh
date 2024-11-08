@@ -13,6 +13,9 @@ function deploy_main_branch(){
   fi  
 
   THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+  
+  LIST=`"theme get --list"`
+  echo "THEME LIST = ${LIST}"
 
   if [[ -n $PRD_PARAMETER ]]; then
       PUBLISH_TEXT="DO NOT PUBLISH"
