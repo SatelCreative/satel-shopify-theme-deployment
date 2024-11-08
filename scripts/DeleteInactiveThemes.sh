@@ -9,9 +9,6 @@ function delete_inactive_themes() {
         cd $WORK_DIR
     fi  
 
-    pwd 
-    ls
-
     THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
@@ -25,7 +22,7 @@ function delete_inactive_themes() {
     do    
         if [[ ! "${BRANCH_NAMES[*]}" =~ "${THEME}" ]]; then
             echo "Themes that will be deleted PR:${THEME} on ${STORE_NAME}"
-            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
+            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
             
