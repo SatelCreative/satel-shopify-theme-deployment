@@ -26,20 +26,20 @@ function delete_inactive_themes() {
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
             
-            # RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
-            # -X DELETE "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
-            # -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-            # -H "Content-Type: application/json")
+            RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
+            -X DELETE "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+            -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
+            -H "Content-Type: application/json")
             
-            # RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
-            # HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+            RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
+            HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
-            # if [[ $HTTP_CODE == "200" ]]; then
-            #     echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
-            # else
-            #     echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
-            #     echo "Response body: ${RESPONSE_BODY}"
-            # fi
+            if [[ $HTTP_CODE == "200" ]]; then
+                echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
+            else
+                echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
+                echo "Response body: ${RESPONSE_BODY}"
+            fi
         fi
     done
 }
