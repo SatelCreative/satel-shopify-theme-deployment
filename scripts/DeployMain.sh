@@ -2,7 +2,6 @@
 
 function deploy_main_branch(){
   STORE_NAME=$1
-  THEME_ID=$2 
   PUBLISH_TEXT=""
 
   # only change dir if theme files are in a different folder than root
@@ -24,8 +23,8 @@ function deploy_main_branch(){
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
   #This will rename the theme
-  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}-${NEW_THEME_NAME} ${NAME} \", \"id\": \"${THEME_ID}\"}}" \
-        -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}-${NEW_THEME_NAME} ${NAME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
+        -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
 
