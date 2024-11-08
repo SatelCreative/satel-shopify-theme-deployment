@@ -6,11 +6,8 @@ deploy_pr_branch_or_tag() {
 
     STORE_NAME=$1
     
-    if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
-    then
-        echo "WORK_DIR ${WORK_DIR}"
-        cd $WORK_DIR
-    fi  
+
+
     
     THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
     
