@@ -31,10 +31,10 @@ deploy_pr_branch_or_tag() {
         # Use api call instead of theme new as the latter creates a V1 theme
         echo "Creating theme"
         create_theme
-        # THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-        #     -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
-        #     -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
-        #     -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
+        THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
+            -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+            -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
+            -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
     
         echo "Created theme id=${THEME_ID}"
     fi
@@ -85,15 +85,15 @@ deploy_pr_branch_or_tag() {
 #     cd .. # need to do this for next store
 }   
 
-function create_theme(){
-    response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-         -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
-         -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
-         -H "Content-Type: application/json")
+# function create_theme(){
+#     response=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
+#          -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+#          -H "X-Shopify-Access-Token:${THEMEKIT_PASSWORD}" \
+#          -H "Content-Type: application/json")
     
-    echo "RESPONSE $response"
+#     echo "RESPONSE $response"
 
-}
+# }
 
 stores=( ${STORE_NAME} )
 for store in "${stores[@]}"
