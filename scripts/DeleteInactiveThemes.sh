@@ -2,7 +2,7 @@
 
 function delete_inactive_themes() {
     STORE_NAME=$1
-    THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
+    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep 'PR: ' | awk '{print $3}'`
@@ -19,20 +19,20 @@ function delete_inactive_themes() {
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
             
-            RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
-            -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
-            -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-            -H "Content-Type: application/json")
+            # RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
+            # -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+            # -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
+            # -H "Content-Type: application/json")
             
-            RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
-            HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+            # RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
+            # HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 
-            if [[ $HTTP_CODE == "200" ]]; then
-                echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
-            else
-                echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
-                echo "Response body: ${RESPONSE_BODY}"
-            fi
+            # if [[ $HTTP_CODE == "200" ]]; then
+            #     echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
+            # else
+            #     echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
+            #     echo "Response body: ${RESPONSE_BODY}"
+            # fi
         fi
     done
 }
