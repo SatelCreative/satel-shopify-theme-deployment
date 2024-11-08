@@ -14,7 +14,7 @@ function deploy_main_branch(){
 
   THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
   
-  LIST=`"theme get --list"`
+  LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
   echo "THEME LIST = ${LIST}"
 
   if [[ -n $PRD_PARAMETER ]]; then
