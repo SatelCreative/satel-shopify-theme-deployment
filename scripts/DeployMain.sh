@@ -5,14 +5,14 @@ function deploy_main_branch(){
   THEME_ID=$2 
   PUBLISH_TEXT=""
 
-  THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'`
-
-  #only change dir if theme files are in a different folder
+  # only change dir if theme files are in a different folder than root
   if [[ -n $WORK_DIR ]] 
   then
       echo "WORK_DIR ${WORK_DIR}"
       cd $WORK_DIR
-  fi 
+  fi  
+
+  THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
   if [[ -n $PRD_PARAMETER ]]; then
       PUBLISH_TEXT="DO NOT PUBLISH"
