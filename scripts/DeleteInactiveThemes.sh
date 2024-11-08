@@ -12,7 +12,7 @@ function delete_inactive_themes() {
     THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
-    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep 'PR: ' | awk '{print $3}'`
+    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
     THEME_LIST=( $THEME_NAMES )
 
     get_branch_list
