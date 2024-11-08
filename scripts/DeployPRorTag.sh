@@ -22,7 +22,7 @@ deploy_pr_branch_or_tag() {
         echo "THEME_NAME $BRANCH_NAME"
     fi
 
-    THEME_ID=`theme get --list | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
+    THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
     echo "Existing THEME_ID=${THEME_ID}"
     
     if [[ ! "${THEME_ID}" ]] 
