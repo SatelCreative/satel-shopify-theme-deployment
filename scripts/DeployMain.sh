@@ -14,8 +14,6 @@ function deploy_main_branch(){
       cd $WORK_DIR
   fi 
 
-  theme configure --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" --themeid=${THEME_ID} --env ${THEME_ENV}; STATUS1=$?
-
   if [[ -n $PRD_PARAMETER ]]; then
       PUBLISH_TEXT="DO NOT PUBLISH"
   fi
@@ -24,12 +22,12 @@ function deploy_main_branch(){
   NEW_THEME_NAME="${BRANCH_NAME^^}"
   #This will rename the theme
   curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}-${NEW_THEME_NAME} ${NAME} \", \"id\": \"${THEME_ID}\"}}" \
-        -X PUT "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+        -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
 
   # Deploy to live
-    theme -e ${THEME_ENV} deploy --allow-live; STATUS1=$?    
+    theme -e uat deploy --allow-live; STATUS1=$?    
 
   # Return the status code of theme commands
   TOTAL=$((STATUS1 + STATUS2))
