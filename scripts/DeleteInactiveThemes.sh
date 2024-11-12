@@ -2,10 +2,17 @@
 
 function delete_inactive_themes() {
     STORE_NAME=$1
-    THEMEKIT_PASSWORD=`grep -o '"'${STORE_NAME}'": "[^"]*' theme.json | grep -o '[^"]*$'` #decode password from json
+
+    if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
+    then
+        echo "WORK_DIR ${WORK_DIR}"
+        cd $WORK_DIR
+    fi  
+
+    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
-    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep 'PR: ' | awk '{print $3}'`
+    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
     THEME_LIST=( $THEME_NAMES )
 
     get_branch_list
@@ -15,12 +22,12 @@ function delete_inactive_themes() {
     do    
         if [[ ! "${BRANCH_NAMES[*]}" =~ "${THEME}" ]]; then
             echo "Themes that will be deleted PR:${THEME} on ${STORE_NAME}"
-            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}.myshopify.com" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
+            THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
             
             RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
-            -X DELETE "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
+            -X DELETE "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json")
             
