@@ -19,14 +19,14 @@ function deploy_main_branch(){
   sed -i "s/theme_id: THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
 
   if [[ -n $PRD_PARAMETER ]]; then
-      PUBLISH_TEXT="DO NOT PUBLISH"
+      PUBLISH_TEXT="DO NOT PUBLISH-"
   fi
   
   NAME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
   #This will rename the theme
   echo "Rename theme"
-  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}-${NEW_THEME_NAME} ${NAME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
+  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${NAME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
         -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
