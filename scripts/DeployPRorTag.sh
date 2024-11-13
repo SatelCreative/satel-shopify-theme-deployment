@@ -38,7 +38,7 @@ deploy_pr_branch_or_tag() {
     fi
 
   # theme download
-    theme download --theme_id=${THEME_ID} --password=${THEMEKIT_PASSWORD}  --store=${STORE_NAME} --live; STATUS1=$?
+    theme download --password=${THEMEKIT_PASSWORD}  --store=${STORE_NAME} --live; STATUS1=$?
 
 
     # Return the status code of theme commands
@@ -51,7 +51,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     echo "theme deploy"
-    theme deploy --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}"
+    theme deploy --id=${THEME_ID} --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}"
 
     cd ..
 
