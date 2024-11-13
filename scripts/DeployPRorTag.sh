@@ -5,12 +5,13 @@ THEME_IDS=()
 deploy_pr_branch_or_tag() {
 
     STORE_NAME=$1 
-
+    
     mkdir temp
+    cp storefront/config.yml temp/config.yml
     cd temp
 
     # create theme
-        THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
     
     if [[ -n "${TAG_NAME}" ]]  
     then  
