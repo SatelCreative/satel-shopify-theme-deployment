@@ -51,7 +51,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     echo "theme deploy"
-    theme deploy --id=${THEME_ID} --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}"
+    theme deploy --themeid=${THEME_ID} --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}"
 
     cd ..
 
