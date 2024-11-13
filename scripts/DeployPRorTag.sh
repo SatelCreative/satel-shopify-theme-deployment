@@ -50,8 +50,8 @@ deploy_pr_branch_or_tag() {
        exit $TOTAL
     fi
 
-    # theme deploy
-    theme deploy
+    echo "theme deploy"
+    theme deploy --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}"
 
     cd ..
 
