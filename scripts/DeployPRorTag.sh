@@ -1,73 +1,78 @@
 #!/bin/bash
+
+# Initialize arrays for preview links and theme IDs
 PREVIEW_LINKS=()
 THEME_IDS=()
 
-THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//'`
+# Extract THEMEKIT password from configuration file
+THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//')
 
-if [[ -n "${TAG_NAME}" ]]  
-then  
-    THEME_NAME=$TAG_NAME
+# Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
+if [[ -n "${TAG_NAME}" ]]; then
+    THEME_NAME="${TAG_NAME}"
 else
-    THEME_NAME=$BRANCH_NAME
-    echo "THEME_NAME $BRANCH_NAME"
+    THEME_NAME="${BRANCH_NAME}"
+    echo "THEME_NAME: ${BRANCH_NAME}"
 fi
 
-THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD}  --store="${STORE_NAME}" | grep -i ${THEME_NAME} | cut -d "[" -f 2 | cut -d "]" -f 1`       
+# Get existing THEME_ID
+THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
 echo "Existing THEME_ID=${THEME_ID}"
 
 deploy_pr_branch_or_tag() {
-    STORE_NAME=$1 
+    local STORE_NAME=$1 
 
-    if [[ $RUN_ID < 1 ]]
-    then
-      clone_published_theme $STORE_NAME
-    fi  
-      
-    if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
-    then
-        echo "WORK_DIR ${WORK_DIR}"
-        cd $WORK_DIR
-    fi  
-    
+    if [[ $RUN_ID -lt 1 ]]; then
+        clone_published_theme "$STORE_NAME"
+    fi
+
+    if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
+        echo "WORK_DIR: ${WORK_DIR}"
+        cd "$WORK_DIR" || exit
+    fi
+
+    # Update config.yml with the theme ID
     sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
-    
-    # echo "Generate PR preview links"
-    PREVIEW_LINK=`theme -e uat open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print \$3}'`
-    PREVIEW_LINKS+=( "Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>" )
+
+    # Generate PR preview link
+    PREVIEW_LINK=$(theme -e uat open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
     echo "Running deploy command"
-    theme -e uat deploy; STATUS3=$?   
-    
+    theme -e uat deploy
+    STATUS3=$?
+
+    # Store theme ID
     THEME_IDS+=("${THEME_ID}")
-    
-    # To overcome first theme deploy's limitation for V2 of uploading files in a bad order, so deploy once again
-    if [[ $STATUS3 != 0 ]]
-    then 
+
+    # Retry deployment if the first attempt fails
+    if [[ $STATUS3 -ne 0 ]]; then
         echo "Re-deploying theme"
-        theme -e uat deploy; STATUS4=$?
-        if [[ $STATUS4 != 0 ]]
-        then 
-            # generate preview link even if it fails as the theme may have  gotten created, eg: Bondiboost
-            # These outputs are used in other steps/jobs via action.yml
+        theme -e uat deploy
+        STATUS4=$?
+        if [[ $STATUS4 -ne 0 ]]; then
+            # Generate preview link even if deployment fails
             echo "THEME_ID=${THEME_IDS[@]}"
-            echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
-            echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
+            echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
+            echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
 
             echo "Failing deployment 2"
-            exit $STATUS4 
-        fi  
-    fi   
-    cd .. # need to do this for next store
- }  
+            exit $STATUS4
+        fi
+    fi
+
+    cd .. || exit  # Navigate back for the next store
+}
 
 clone_published_theme() {
-    STORE_NAME=$1
-    mkdir temp
-    cd temp
+    local STORE_NAME=$1
+
+    # Create temporary directory for theme cloning
+    mkdir -p temp
+    cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
-        # Theme doesn't exist, create it
-        # Use API call instead of `theme new` as the latter creates a V1 theme
+        # Create the theme if it doesn't exist
         echo "Creating theme"
         THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
             -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
@@ -81,29 +86,25 @@ clone_published_theme() {
     theme download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
 
-    # Return the status code of theme commands
-    TOTAL=$((STATUS1))
-
-    if [[ $TOTAL != 0 ]]; then
+    if [[ $STATUS1 -ne 0 ]]; then
         echo "Failing deployment 1"
-        exit $TOTAL
+        exit $STATUS1
     fi
 
     echo "Deploying theme"
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
 
-    cd ..
-} 
+    cd .. || exit
+}
 
+# Iterate over stores and deploy the theme
+stores=("${STORE_NAME}")
+for store in "${stores[@]}"; do
+    echo "====== Running deploy PR or Tag on store ${store} ====="
+    deploy_pr_branch_or_tag "${store}"
+done
 
-stores=( ${STORE_NAME} )
-for store in "${stores[@]}"
-do
-echo "====== Running deploy PR or Tag on store ${store} ====="  
-deploy_pr_branch_or_tag "${store}"
-done 
-
+# Output theme IDs and preview links for use in other steps/jobs
 echo "THEME_IDs=${THEME_IDS[@]}"
-# These outputs are used in other steps/jobs via action.yml
-echo "preview_link=${PREVIEW_LINKS[@]}" >> $GITHUB_OUTPUT
-echo "theme_id=${THEME_IDS[@]}" >> $GITHUB_OUTPUT
+echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
+echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
