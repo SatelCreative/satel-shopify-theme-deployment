@@ -37,10 +37,8 @@ deploy_pr_branch_or_tag() {
     fi
 
   # theme download
-    if [[ $COPY_SETTINGS == true ]] && [[ -n $RUN_ID ]]; then   
-        echo "Copy settings"
-        theme download --live; STATUS1=$?
-    fi
+    theme download --live; STATUS1=$?
+
 
     # Return the status code of theme commands
     TOTAL=$((STATUS1))
