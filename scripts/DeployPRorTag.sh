@@ -2,7 +2,7 @@
 PREVIEW_LINKS=()
 THEME_IDS=()
 
-THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//'`
 
 if [[ -n "${TAG_NAME}" ]]  
 then  
@@ -63,7 +63,6 @@ deploy_pr_branch_or_tag() {
 clone_published_theme() {
     STORE_NAME=$1
     mkdir temp
-    cp storefront/config.yml temp/config.yml
     cd temp
 
     if [[ -z "${THEME_ID}" ]]; then
