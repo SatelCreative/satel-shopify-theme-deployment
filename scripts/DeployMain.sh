@@ -22,11 +22,11 @@ function deploy_main_branch(){
       PUBLISH_TEXT="DO NOT PUBLISH-"
   fi
   
-  NAME=`TZ='US/Pacific' date`
+  TIME=`TZ='US/Pacific' date`
   NEW_THEME_NAME="${BRANCH_NAME^^}"
   #This will rename the theme
   echo "Rename theme"
-  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${NAME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
+  curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
         -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
