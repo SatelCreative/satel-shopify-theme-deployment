@@ -22,6 +22,7 @@ echo "Existing THEME_ID=${THEME_ID}"
 deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
+    # Clone the main theme for the first run before creatig the new theme
     if [[ $RUN_ID -lt 1 ]]; then
         clone_published_theme "$STORE_NAME"
     fi
