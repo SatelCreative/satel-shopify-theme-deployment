@@ -23,11 +23,11 @@ deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
     # Clone the main theme for the first run before creatig the new theme
-    #if [[ $RUN_ID -lt 1 ]]; then
+    if [[ $RUN_ID -lt 1 ]]; then
     echo "RUN_ID is ${RUN_ID}"
     echo "====== Cloning main theme to the new theme ====="
     clone_published_theme "$STORE_NAME"
-    #fi
+    fi
 
     if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
         echo "WORK_DIR: ${WORK_DIR}"
@@ -45,24 +45,13 @@ deploy_pr_branch_or_tag() {
     theme -e uat deploy
     STATUS3=$?
 
+    if [[ $STATUS3 -ne 0 ]]; then
+        echo "Failing deployment 3"
+        exit $STATUS3
+    fi
+
     # Store theme ID
     THEME_IDS+=("${THEME_ID}")
-
-    # Retry deployment if the first attempt fails
-    if [[ $STATUS3 -ne 0 ]]; then
-        echo "Re-deploying theme"
-        theme -e uat deploy
-        STATUS4=$?
-        if [[ $STATUS4 -ne 0 ]]; then
-            # Generate preview link even if deployment fails
-            echo "THEME_ID=${THEME_IDS[@]}"
-            echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
-            echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
-
-            echo "Failing deployment 2"
-            exit $STATUS4
-        fi
-    fi
 
     cd .. || exit  # Navigate back for the next store
 }
@@ -72,6 +61,7 @@ clone_published_theme() {
 
     # Create temporary directory for theme cloning
     mkdir -p temp
+    cp storefront/config.yml temp/config.yml
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
@@ -96,6 +86,23 @@ clone_published_theme() {
 
     echo "Deploying theme"
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+     $STATUS2=$?
+
+     # Retry deployment if the first attempt fails
+    if [[ $STATUS2 -ne 0 ]]; then
+        echo "Re-deploying theme"
+        theme -e uat deploy
+        STATUS3=$?
+        if [[ $STATUS3 -ne 0 ]]; then
+            # Generate preview link even if deployment fails
+            echo "THEME_ID=${THEME_IDS[@]}"
+            echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
+            echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
+
+            echo "Failing deployment 2"
+            exit $STATUS3
+        fi
+    fi
 
     cd .. || exit
 }
