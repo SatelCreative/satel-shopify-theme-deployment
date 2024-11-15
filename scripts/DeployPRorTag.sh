@@ -23,8 +23,10 @@ deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
     # Clone the main theme for the first run before creatig the new theme
-    if [[ $RUN_ID -lt 1 ]]; then
-        clone_published_theme "$STORE_NAME"
+    echo "RUN_ID is ${RUN_ID}"
+    if [[ $RUN_ID -lt 2 ]]; then
+    echo "====== Cloning main theme to the new theme ====="
+    clone_published_theme "$STORE_NAME"
     fi
 
     if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
@@ -39,28 +41,17 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINK=$(theme -e uat open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
-    echo "Running deploy command"
+    echo "===== Running deploy command ====="
     theme -e uat deploy
     STATUS3=$?
 
+    if [[ $STATUS3 -ne 0 ]]; then
+        echo "===== Failing deployment 3 ====="
+        exit $STATUS3
+    fi
+
     # Store theme ID
     THEME_IDS+=("${THEME_ID}")
-
-    # Retry deployment if the first attempt fails
-    if [[ $STATUS3 -ne 0 ]]; then
-        echo "Re-deploying theme"
-        theme -e uat deploy
-        STATUS4=$?
-        if [[ $STATUS4 -ne 0 ]]; then
-            # Generate preview link even if deployment fails
-            echo "THEME_ID=${THEME_IDS[@]}"
-            echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
-            echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
-
-            echo "Failing deployment 2"
-            exit $STATUS4
-        fi
-    fi
 
     cd .. || exit  # Navigate back for the next store
 }
@@ -70,11 +61,12 @@ clone_published_theme() {
 
     # Create temporary directory for theme cloning
     mkdir -p temp
+    cp storefront/config.yml temp/config.yml
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
         # Create the theme if it doesn't exist
-        echo "Creating theme"
+        echo "===== Creating theme ====="
         THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
             -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
@@ -92,8 +84,25 @@ clone_published_theme() {
         exit $STATUS1
     fi
 
-    echo "Deploying theme"
+    echo "===== Deploying theme ====="
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+    STATUS2=$?
+
+     # Retry deployment if the first attempt fails
+    if [[ $STATUS2 -ne 0 ]]; then
+        echo "===== Re-deploying theme ====="
+        theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+        STATUS3=$?
+        if [[ $STATUS3 -ne 0 ]]; then
+            # Generate preview link even if deployment fails
+            echo "THEME_ID=${THEME_IDS[@]}"
+            echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
+            echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
+
+            echo "===== Failing deployment 2 ====="
+            exit $STATUS3
+        fi
+    fi
 
     cd .. || exit
 }
