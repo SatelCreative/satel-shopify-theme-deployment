@@ -86,7 +86,7 @@ clone_published_theme() {
 
     echo "Deploying theme"
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
-     $STATUS2=$?
+    STATUS2=$?
 
      # Retry deployment if the first attempt fails
     if [[ $STATUS2 -ne 0 ]]; then
