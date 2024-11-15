@@ -23,11 +23,11 @@ deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
     # Clone the main theme for the first run before creatig the new theme
-    if [[ $RUN_ID -lt 1 ]]; then
-        echo "RUN_ID is ${RUN_ID}"
-        echo "====== Cloning main theme to new theme ====="
-        clone_published_theme "$STORE_NAME"
-    fi
+    #if [[ $RUN_ID -lt 1 ]]; then
+    echo "RUN_ID is ${RUN_ID}"
+    echo "====== Cloning main theme to the new theme ====="
+    clone_published_theme "$STORE_NAME"
+    #fi
 
     if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
         echo "WORK_DIR: ${WORK_DIR}"
