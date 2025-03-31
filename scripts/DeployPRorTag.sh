@@ -8,7 +8,7 @@ THEME_IDS=()
 THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//')
 
 echo ">>>>>PRINT CONFIG 1"
-cat config,yml
+cat config.yml
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
@@ -89,7 +89,7 @@ clone_published_theme() {
 
     echo ">>>>>PRINT CONFIG 2"
     cat config,yml
-    
+
     echo "===== Deploying theme ====="
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
     STATUS2=$?
