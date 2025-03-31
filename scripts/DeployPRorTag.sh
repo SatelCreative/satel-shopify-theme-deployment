@@ -61,7 +61,7 @@ clone_published_theme() {
     local STORE_NAME=$1
 
     echo ">>>>>PRINT CONFIG 2"
-    cat config. yml
+    cat config.yml
 
     # Create temporary directory for theme cloning
     mkdir -p temp
