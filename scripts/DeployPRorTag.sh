@@ -6,7 +6,8 @@ THEME_IDS=()
 
 # Extract THEMEKIT password from configuration file
 THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//')
-
+pwd
+ls
 echo ">>>>>PRINT CONFIG 1"
 cat config.yml
 
