@@ -40,7 +40,7 @@ deploy_pr_branch_or_tag() {
 
     echo ">>>>>PRINT CONFIG 1"
     ls
-    cat config.yml
+    cat storefront/config.yml
 
     # Generate PR preview link
     PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
@@ -65,7 +65,7 @@ clone_published_theme() {
     local STORE_NAME=$1
 
     echo ">>>>>PRINT CONFIG 2"
-    cat config.yml
+    cat storefront/config.yml
 
     # Create temporary directory for theme cloning
     mkdir -p temp
