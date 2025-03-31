@@ -7,6 +7,9 @@ THEME_IDS=()
 # Extract THEMEKIT password from configuration file
 THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//')
 
+echo "PRINT CONFIG"
+cat config,yml
+
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
     THEME_NAME="${TAG_NAME}"
@@ -38,11 +41,11 @@ deploy_pr_branch_or_tag() {
     sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     # Generate PR preview link
-    PREVIEW_LINK=$(theme -e uat open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
     echo "===== Running deploy command ====="
-    theme -e uat deploy
+    theme -e downloadPublishedSettings deploy
     STATUS3=$?
 
     if [[ $STATUS3 -ne 0 ]]; then
@@ -76,7 +79,7 @@ clone_published_theme() {
     fi
 
     # Download the theme
-    theme download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
+    theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
 
     if [[ $STATUS1 -ne 0 ]]; then

@@ -23,7 +23,7 @@ function deploy_main_branch(){
   fi
   
   TIME=`TZ='US/Pacific' date`
-  NEW_THEME_NAME="${BRANCH_NAME^^}"
+  NEW_THEME_NAME="GitHub-${BRANCH_NAME^^}"
   #This will rename the theme
   echo "Rename theme"
   curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
