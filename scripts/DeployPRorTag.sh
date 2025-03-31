@@ -38,6 +38,10 @@ deploy_pr_branch_or_tag() {
     # Update config.yml with the theme ID
     sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
+    echo ">>>>>PRINT CONFIG 1"
+    ls
+    cat config.yml
+
     # Generate PR preview link
     PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
