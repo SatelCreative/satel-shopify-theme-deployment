@@ -35,10 +35,9 @@ deploy_pr_branch_or_tag() {
     echo "====== Cloning main theme to the new theme ====="
     clone_published_theme "$STORE_NAME"
 
-
     # Generate PR preview link
     echo "===== Generating preview link ====="
-    PREVIEW_LINK=$(theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    PREVIEW_LINK=$(theme -e deployTheme --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}"
     theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}'
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
