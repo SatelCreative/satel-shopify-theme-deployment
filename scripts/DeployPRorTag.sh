@@ -92,13 +92,13 @@ clone_published_theme() {
     fi
 
     echo "===== Deploying theme 1 ====="
-    theme -e deployTheme deploy # --themeid="${THEME_ID}" #--password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+    theme -e deployTheme deploy 
     STATUS2=$?
 
     # Retry deployment if the first attempt fails
     if [[ $STATUS2 -ne 0 ]]; then
         echo "===== Re-deploying theme 2 ====="
-        theme -e deployTheme deploy #--themeid="${THEME_ID}" #--password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+        theme -e deployTheme deploy 
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             # Generate preview link even if deployment fails
