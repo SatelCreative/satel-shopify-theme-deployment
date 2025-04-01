@@ -65,7 +65,7 @@ clone_published_theme() {
 
     # Create temporary directory for theme cloning
     mkdir -p temp
-    cp storefront/* temp/
+    cp -r storefront/* temp/
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
