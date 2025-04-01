@@ -22,6 +22,11 @@ deploy_pr_branch_or_tag() {
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
     echo "Existing THEME_ID=${THEME_ID}"
+    
+    # Create temporary directory for theme cloning
+    mkdir -p temp
+    cp -r $WORK_DIR/* temp/
+    cd temp || exit
 
     # Update TARGET_THEME_ID in config.yml
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
@@ -46,11 +51,6 @@ deploy_pr_branch_or_tag() {
 
 clone_published_theme() {
     local STORE_NAME=$1
-
-    # Create temporary directory for theme cloning
-    mkdir -p temp
-    cp -r $WORK_DIR/* temp/
-    cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
         # Create the theme if it doesn't exist
@@ -82,7 +82,7 @@ clone_published_theme() {
     if [[ $STATUS2 -ne 0 ]]; then
         echo "===== Re-deploying theme ====="
         theme -e deployTheme deploy 
-        
+
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             # Generate preview link even if deployment fails
