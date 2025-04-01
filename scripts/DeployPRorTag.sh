@@ -15,40 +15,20 @@ else
     echo "THEME_NAME: ${BRANCH_NAME}"
 fi
 
-# # Get existing THEME_ID
-# THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
-# echo "Existing THEME_ID=${THEME_ID}"
-
 deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
-    # # Clone the main theme for the first run before creatig the new theme
-    # echo "RUN_ID is ${RUN_ID}"
-    # if [[ $RUN_ID -lt 2 ]]; then
+    # # Clone the main theme for the first run before creating the new theme
     echo "====== Cloning main theme to the new theme ====="
     clone_published_theme "$STORE_NAME"
-    # fi
 
-    # if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
-    #     echo "WORK_DIR: ${WORK_DIR}"
-    #     cd "$WORK_DIR" || exit
-    # fi
-
-    # # Update config.yml with the theme ID
-    # sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     # Generate PR preview link
-    PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    echo "===== Generating preview link ====="
+    PREVIEW_LINK=$(theme -e deploy open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    theme -e deploy open -b /bin/echo | grep -i "${STORE_NAME}"
+    theme -e deploy open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}'
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
-
-    # echo "===== Running deploy command 3 ====="
-    # theme -e deployTheme deploy --themeid="${THEME_ID}"
-    # STATUS3=$?
-
-    # if [[ $STATUS3 -ne 0 ]]; then
-    #     echo "===== Failing deployment 3 ====="
-    #     exit $STATUS3
-    # fi
 
     # Store theme ID
     THEME_IDS+=("${THEME_ID}")
@@ -75,29 +55,24 @@ clone_published_theme() {
         echo "Created theme id=${THEME_ID}"
     fi
 
-    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
-    echo "PRINT CONFIG BEFORE DOWNLOAD"
-    cat config.yml
-
-    #THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
-    
     echo "===== Download theme stuff from live theme ====="
-    # theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     theme -e downloadPublishedSettings download --live
     STATUS1=$?
 
     if [[ $STATUS1 -ne 0 ]]; then
-        echo "Failing deployment 1"
+        echo "Failing deployment due to download theme stuff from live theme failue"
         exit $STATUS1
     fi
 
-    echo "===== Deploying theme 1 ====="
+    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml # Update TARGET_THEME_ID in config.yml
+
+    echo "===== Deploying theme first time ====="
     theme -e deployTheme deploy 
     STATUS2=$?
 
     # Retry deployment if the first attempt fails
     if [[ $STATUS2 -ne 0 ]]; then
-        echo "===== Re-deploying theme 2 ====="
+        echo "===== Re-deploying theme ====="
         theme -e deployTheme deploy 
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
@@ -106,7 +81,7 @@ clone_published_theme() {
             echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
             echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
 
-            echo "===== Failing deployment 2 ====="
+            echo "===== Failing deployment due to error in theme deploy ====="
             exit $STATUS3
         fi
     fi
