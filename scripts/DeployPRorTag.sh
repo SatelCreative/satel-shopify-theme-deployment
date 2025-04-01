@@ -37,10 +37,6 @@ deploy_pr_branch_or_tag() {
     # Update config.yml with the theme ID
     sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
-    echo ">>>>>PRINT CONFIG 1"
-    ls
-    cat storefront/config.yml
-
     # Generate PR preview link
     PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
@@ -79,10 +75,6 @@ clone_published_theme() {
         echo "Created theme id=${THEME_ID}"
     fi
 
-    echo "1. Before download The current working directory is:"
-    pwd
-    ls
-
     echo "===== Download theme stuff from live theme ====="
     theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
@@ -91,13 +83,6 @@ clone_published_theme() {
         echo "Failing deployment 1"
         exit $STATUS1
     fi
-
-    echo ">>>>> PRINT CONFIG 2"
-    cat config.yml
-
-    echo "2. After download The current working directory is:"
-    pwd
-    ls
 
     echo "===== Deploying theme ====="
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"

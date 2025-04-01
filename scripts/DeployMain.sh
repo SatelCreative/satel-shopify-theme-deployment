@@ -11,12 +11,12 @@ function deploy_main_branch(){
       cd $WORK_DIR
   fi  
 
-  THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+  THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
   
   LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
   echo "THEME LIST = ${LIST}"
 
-  sed -i "s/theme_id: THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
+  sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
 
   if [[ -n $PRD_PARAMETER ]]; then
       PUBLISH_TEXT="DO NOT PUBLISH-"
@@ -30,9 +30,13 @@ function deploy_main_branch(){
         -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json" 
-
+  
+  echo "check pwd and ls"
+  pwd
+  ls
+  
   # Deploy to live
-    theme -e uat deploy --allow-live; STATUS1=$?    
+    theme -e deployTheme deploy --allow-live; STATUS1=$?    
 
   # Return the status code of theme commands
   TOTAL=$((STATUS1 + STATUS2))
