@@ -15,8 +15,16 @@ else
     echo "THEME_NAME: ${BRANCH_NAME}"
 fi
 
+
 deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
+
+    # Get existing THEME_ID
+    THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
+    echo "Existing THEME_ID=${THEME_ID}"
+
+    # Update TARGET_THEME_ID in config.yml
+    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     # # Clone the main theme for the first run before creating the new theme
     echo "====== Cloning main theme to the new theme ====="
@@ -64,7 +72,7 @@ clone_published_theme() {
         exit $STATUS1
     fi
 
-    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml # Update TARGET_THEME_ID in config.yml
+    ## Old Sed for theme ID 
 
     echo "===== Deploying theme first time ====="
     theme -e deployTheme deploy 
@@ -74,6 +82,7 @@ clone_published_theme() {
     if [[ $STATUS2 -ne 0 ]]; then
         echo "===== Re-deploying theme ====="
         theme -e deployTheme deploy 
+        
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             # Generate preview link even if deployment fails
