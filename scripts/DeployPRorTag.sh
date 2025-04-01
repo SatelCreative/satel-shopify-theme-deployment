@@ -41,8 +41,8 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
-    echo "===== Running deploy command ====="
-    theme -e deployTheme deploy
+    echo "===== Running deploy command 3 ====="
+    theme -e deployTheme deploy --themeid="${THEME_ID}"
     STATUS3=$?
 
     if [[ $STATUS3 -ne 0 ]]; then
@@ -78,10 +78,11 @@ clone_published_theme() {
     echo "PRINT CONFIG BEFORE DOWNLOAD"
     cat config.yml
 
-    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
-
+    #THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
+    
     echo "===== Download theme stuff from live theme ====="
-    theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
+    # theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
+    theme -e downloadPublishedSettings download --live
     STATUS1=$?
 
     if [[ $STATUS1 -ne 0 ]]; then
@@ -90,13 +91,13 @@ clone_published_theme() {
     fi
 
     echo "===== Deploying theme 1 ====="
-    theme -e deployTheme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+    theme -e deployTheme deploy --themeid="${THEME_ID}" #--password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
     STATUS2=$?
 
     # Retry deployment if the first attempt fails
     if [[ $STATUS2 -ne 0 ]]; then
         echo "===== Re-deploying theme 2 ====="
-        theme -e deployTheme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+        theme -e deployTheme deploy --themeid="${THEME_ID}" #--password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             # Generate preview link even if deployment fails
