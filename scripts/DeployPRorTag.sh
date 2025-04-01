@@ -37,7 +37,7 @@ deploy_pr_branch_or_tag() {
 
     # Generate PR preview link
     echo "===== Generating preview link ====="
-    PREVIEW_LINK=$(theme -e deployTheme --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
+    PREVIEW_LINK=$(theme -e deployTheme --themeid="${THEME_ID}"  --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}"
     theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}'
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
