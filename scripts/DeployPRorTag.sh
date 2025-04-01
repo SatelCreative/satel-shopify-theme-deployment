@@ -66,7 +66,6 @@ clone_published_theme() {
     # Create temporary directory for theme cloning
     mkdir -p temp
     cp storefront/* temp/
-    #cp storefront/config.yml temp/config.yml
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
@@ -80,6 +79,10 @@ clone_published_theme() {
         echo "Created theme id=${THEME_ID}"
     fi
 
+    echo "1. Before download The current working directory is:"
+    pwd
+    ls
+
     echo "===== Download theme stuff from live theme ====="
     theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
@@ -92,7 +95,7 @@ clone_published_theme() {
     echo ">>>>> PRINT CONFIG 2"
     cat config.yml
 
-    echo "The current working directory is:"
+    echo "2. After download The current working directory is:"
     pwd
     ls
 
