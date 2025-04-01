@@ -5,8 +5,7 @@ PREVIEW_LINKS=()
 THEME_IDS=()
 
 # Extract THEMEKIT password from configuration file
-THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | sed 's/.*password:\s*//')
-
+THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 | sed 's/.*password:\s*//')
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
