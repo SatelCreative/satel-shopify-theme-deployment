@@ -65,7 +65,8 @@ clone_published_theme() {
 
     # Create temporary directory for theme cloning
     mkdir -p temp
-    cp storefront/config.yml temp/config.yml
+    cp storefront/* temp/
+    #cp storefront/config.yml temp/config.yml
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
@@ -93,6 +94,7 @@ clone_published_theme() {
 
     echo "The current working directory is:"
     pwd
+    ls
 
     echo "===== Deploying theme ====="
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
