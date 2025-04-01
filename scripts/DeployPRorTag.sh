@@ -15,40 +15,40 @@ else
     echo "THEME_NAME: ${BRANCH_NAME}"
 fi
 
-# Get existing THEME_ID
-THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
-echo "Existing THEME_ID=${THEME_ID}"
+# # Get existing THEME_ID
+# THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
+# echo "Existing THEME_ID=${THEME_ID}"
 
 deploy_pr_branch_or_tag() {
     local STORE_NAME=$1 
 
-    # Clone the main theme for the first run before creatig the new theme
-    echo "RUN_ID is ${RUN_ID}"
-    if [[ $RUN_ID -lt 2 ]]; then
+    # # Clone the main theme for the first run before creatig the new theme
+    # echo "RUN_ID is ${RUN_ID}"
+    # if [[ $RUN_ID -lt 2 ]]; then
     echo "====== Cloning main theme to the new theme ====="
     clone_published_theme "$STORE_NAME"
-    fi
+    # fi
 
-    if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
-        echo "WORK_DIR: ${WORK_DIR}"
-        cd "$WORK_DIR" || exit
-    fi
+    # if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
+    #     echo "WORK_DIR: ${WORK_DIR}"
+    #     cd "$WORK_DIR" || exit
+    # fi
 
-    # Update config.yml with the theme ID
-    sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
+    # # Update config.yml with the theme ID
+    # sed -i "s/theme_id: THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     # Generate PR preview link
     PREVIEW_LINK=$(theme -e downloadPublishedSettings open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
-    echo "===== Running deploy command 3 ====="
-    theme -e deployTheme deploy --themeid="${THEME_ID}"
-    STATUS3=$?
+    # echo "===== Running deploy command 3 ====="
+    # theme -e deployTheme deploy --themeid="${THEME_ID}"
+    # STATUS3=$?
 
-    if [[ $STATUS3 -ne 0 ]]; then
-        echo "===== Failing deployment 3 ====="
-        exit $STATUS3
-    fi
+    # if [[ $STATUS3 -ne 0 ]]; then
+    #     echo "===== Failing deployment 3 ====="
+    #     exit $STATUS3
+    # fi
 
     # Store theme ID
     THEME_IDS+=("${THEME_ID}")
@@ -61,7 +61,7 @@ clone_published_theme() {
 
     # Create temporary directory for theme cloning
     mkdir -p temp
-    cp -r storefront/* temp/
+    cp -r $WORK_DIR/* temp/
     cd temp || exit
 
     if [[ -z "${THEME_ID}" ]]; then
