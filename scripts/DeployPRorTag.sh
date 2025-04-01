@@ -63,9 +63,6 @@ deploy_pr_branch_or_tag() {
 clone_published_theme() {
     local STORE_NAME=$1
 
-    echo ">>>>>PRINT CONFIG 2"
-    cat storefront/config.yml
-
     # Create temporary directory for theme cloning
     mkdir -p temp
     cp storefront/config.yml temp/config.yml
@@ -82,7 +79,7 @@ clone_published_theme() {
         echo "Created theme id=${THEME_ID}"
     fi
 
-    # Download the theme
+    echo "===== Download theme stuff from live theme ====="
     theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
 
@@ -92,7 +89,8 @@ clone_published_theme() {
     fi
 
     echo ">>>>>PRINT CONFIG 2"
-    cat config. yml
+    cat config.yml
+    pwd
 
     echo "===== Deploying theme ====="
     theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
