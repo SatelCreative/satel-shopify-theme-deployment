@@ -10,7 +10,7 @@ THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 |
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
     THEME_NAME="${TAG_NAME}"
-else
+else 
     THEME_NAME="${BRANCH_NAME}"
     echo "THEME_NAME: ${BRANCH_NAME}"
 fi
@@ -42,7 +42,7 @@ deploy_pr_branch_or_tag() {
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
     echo "===== Running deploy command ====="
-    theme -e downloadPublishedSettings deploy
+    theme -e deployTheme deploy
     STATUS3=$?
 
     if [[ $STATUS3 -ne 0 ]]; then
@@ -75,6 +75,11 @@ clone_published_theme() {
         echo "Created theme id=${THEME_ID}"
     fi
 
+    echo "PRINT CONFIG BEFORE DOWNLOAD"
+    cat config.yml
+
+    THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
+
     echo "===== Download theme stuff from live theme ====="
     theme -e downloadPublishedSettings download --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" --live
     STATUS1=$?
@@ -84,14 +89,14 @@ clone_published_theme() {
         exit $STATUS1
     fi
 
-    echo "===== Deploying theme ====="
-    theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+    echo "===== Deploying theme 1 ====="
+    theme -e deployTheme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
     STATUS2=$?
 
-     # Retry deployment if the first attempt fails
+    # Retry deployment if the first attempt fails
     if [[ $STATUS2 -ne 0 ]]; then
-        echo "===== Re-deploying theme ====="
-        theme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
+        echo "===== Re-deploying theme 2 ====="
+        theme -e deployTheme deploy --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             # Generate preview link even if deployment fails
