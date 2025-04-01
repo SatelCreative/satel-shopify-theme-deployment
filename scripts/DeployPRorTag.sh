@@ -37,8 +37,6 @@ deploy_pr_branch_or_tag() {
         echo "WORK_DIR: ${WORK_DIR}"
         cd "$WORK_DIR" || exit
     fi
-    echo "print ls"
-    ls
 
     echo "===== Downloading theme settings from live theme ====="
     theme -e downloadPublishedSettings download --live
@@ -48,7 +46,7 @@ deploy_pr_branch_or_tag() {
         exit $STATUS1
     fi
 
-    # Update TARGET_THEME_ID in config.yml
+    # Update TARGET_THEME_ID in config.yml with the new THEME_ID
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     echo "===== Deploying theme for the first time ====="
