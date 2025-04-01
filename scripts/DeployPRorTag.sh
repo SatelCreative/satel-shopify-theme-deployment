@@ -88,8 +88,10 @@ clone_published_theme() {
         exit $STATUS1
     fi
 
-    echo ">>>>>PRINT CONFIG 2"
+    echo ">>>>> PRINT CONFIG 2"
     cat config.yml
+
+    echo "The current working directory is:"
     pwd
 
     echo "===== Deploying theme ====="
