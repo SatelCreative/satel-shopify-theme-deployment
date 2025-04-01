@@ -3,6 +3,7 @@
 # Initialize arrays for preview links and theme IDs
 PREVIEW_LINKS=()
 THEME_IDS=()
+THEME_ID=""
 
 # Extract THEMEKIT password from configuration file
 THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 | sed 's/.*password:\s*//')
@@ -28,9 +29,6 @@ deploy_pr_branch_or_tag() {
     cp -r $WORK_DIR/* temp/
     cd temp || exit
 
-    # Update TARGET_THEME_ID in config.yml
-    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
-
     # # Clone the main theme for the first run before creating the new theme
     echo "====== Cloning main theme to the new theme ====="
     clone_published_theme "$STORE_NAME"
@@ -38,8 +36,6 @@ deploy_pr_branch_or_tag() {
     # Generate PR preview link
     echo "===== Generating preview link ====="
     PREVIEW_LINK=$(theme -e deployTheme --themeid="${THEME_ID}"  --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
-    theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}"
-    theme -e deployTheme open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}'
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
 
     # Store theme ID
@@ -71,7 +67,8 @@ clone_published_theme() {
         exit $STATUS1
     fi
 
-    ## Old Sed for theme ID 
+    # Update TARGET_THEME_ID in config.yml
+    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     echo "===== Deploying theme first time ====="
     theme -e deployTheme deploy 
