@@ -16,6 +16,14 @@ function deploy_main_branch(){
   LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
   echo "THEME LIST = ${LIST}"
 
+  echo "===== Downloading theme settings from live theme ====="
+  theme -e downloadPublishedSettings download --live
+  STATUS1=$?
+  if [[ $STATUS1 -ne 0 ]]; then
+      echo "Failing deployment due to error in downloading live theme settings"
+      exit $STATUS1
+  fi
+
   sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
 
   if [[ -n $PRD_PARAMETER ]]; then
