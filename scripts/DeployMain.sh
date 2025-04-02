@@ -19,7 +19,7 @@ function deploy_main_branch(){
   sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
 
   if [[ -n $PRD_PARAMETER ]]; then
-      PUBLISH_TEXT="DON'T PUBLISH-"
+      PUBLISH_TEXT="DON'T PUBLISH "
   fi
   
   TIME=`TZ='US/Pacific' date`
