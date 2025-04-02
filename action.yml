@@ -73,9 +73,6 @@ runs:
 
     - name: Deploy a PR or a Tag
       id: deploy-pr
-      # Only run on 1st commit, as per Alex rest of the commit 
-      # will be done directly on SHopify first as bug fixes
-      if: ${{ inputs.run-id == '1' }}
       env:
         STORE_NAME: ${{ inputs.store-name }}
         THEME_ENV: ${{ inputs.theme-env }}
@@ -85,10 +82,12 @@ runs:
         BRANCH_NAME: ${{ inputs.current-branch-name }}
         TAG_NAME: ${{ inputs.tag-name }}
         RUN_ID: ${{ inputs.run-id }}
+        # Only run on 1st commit, as per Alex rest of the commit 
+        # will be done directly on SHopify first as bug fixes  
       run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
-          ${{ github.action_path }}/scripts/DeployPRorTag.sh
-        fi
+          if [[ "${{ inputs.run-id }}" == "1" ]] && ([[ "${{ inputs.current-branch-name }}" != "main" ]] || [[ -n "${{ inputs.tag-name }}" ]]); then 
+            ${{ github.action_path }}/scripts/DeployPRorTag.sh
+          fi
       shell: bash
 
     - name: Deploy Main
