@@ -8,10 +8,8 @@ function delete_inactive_themes() {
         echo "WORK_DIR ${WORK_DIR}"
         cd $WORK_DIR
     fi  
-    cat config.yml
-    ls
 
-    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+    THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
@@ -28,7 +26,7 @@ function delete_inactive_themes() {
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
             
-            RESPONSE=$(curl --fail --show-error -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
+            RESPONSE=$(curl -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
             -X DELETE "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json")
