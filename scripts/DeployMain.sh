@@ -4,7 +4,7 @@ function deploy_main_branch(){
   STORE_NAME=$1
   PUBLISH_TEXT=""
 
-  # only change dir if theme files are in a different folder than root
+  # Only change dir if theme files are in a different folder than root
   if [[ -n $WORK_DIR ]] 
   then
       echo "WORK_DIR ${WORK_DIR}"
@@ -23,7 +23,7 @@ function deploy_main_branch(){
   fi
 
   TIME=$(TZ='US/Pacific' date '+%b %d %H:%M %Z %Y')  # Shortened date format
-  NEW_THEME_NAME="GitHub-${BRANCH_NAME^^}"  # Add GitHub- prefix
+  NEW_THEME_NAME="GITHUB-${BRANCH_NAME^^}"  # Add GitHub- prefix
 
   # This will rename the theme
   echo "Rename theme"
