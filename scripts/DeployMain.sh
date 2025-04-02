@@ -22,7 +22,7 @@ function deploy_main_branch(){
       PUBLISH_TEXT="DON'T PUBLISH "
   fi
 
-  TIME=$(TZ='US/Pacific' date '+%a %b %d %H:%M %Z %Y')  # Format without seconds
+  TIME=$(TZ='US/Pacific' date '+%b %d %H:%M %Z %Y')  # Shortened date format
   NEW_THEME_NAME="GitHub-${BRANCH_NAME^^}"  # Add GitHub- prefix
 
   # This will rename the theme
