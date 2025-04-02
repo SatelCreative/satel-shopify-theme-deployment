@@ -27,13 +27,6 @@ function delete_inactive_themes() {
             THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
-
-            RRRR=$(curl -X GET "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
-                -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-                -H "Content-Type: application/json")
-
-            echo "RRRR: ${RRRR}"    
-
             
             RESPONSE=$(curl --fail --show-error -s -w "\n%{http_code}" -d "{\"theme\":{\"id\": \"${THEME_ID}\",\"name\":\"${THEME}\"}}" \
             -X DELETE "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${THEME_ID}.json" \
