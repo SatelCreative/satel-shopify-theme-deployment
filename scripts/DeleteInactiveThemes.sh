@@ -40,10 +40,11 @@ function delete_inactive_themes() {
                 echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
                 echo "Response body: ${RESPONSE_BODY}"
             fi
-        fi
+            
         else
-            echo "No GitHub themes to delete on ${STORE_NAME}"
+            echo "No GitHub themes to delete on ${STORE_NAME}"    
         fi
+        
     done
 }
 
