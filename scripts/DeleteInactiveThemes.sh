@@ -41,6 +41,9 @@ function delete_inactive_themes() {
                 echo "Response body: ${RESPONSE_BODY}"
             fi
         fi
+        else
+            echo "No GitHub themes to delete on ${STORE_NAME}"
+        fi
     done
 }
 
