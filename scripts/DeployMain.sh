@@ -19,11 +19,11 @@ function deploy_main_branch(){
   sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
 
   if [[ -n $PRD_PARAMETER ]]; then
-      PUBLISH_TEXT="DO NOT PUBLISH-"
+      PUBLISH_TEXT="DON'T PUBLISH-"
   fi
   
   TIME=`TZ='US/Pacific' date`
-  NEW_THEME_NAME="GitHub-${BRANCH_NAME^^}"
+  NEW_THEME_NAME="Git-${BRANCH_NAME^^}"
   #This will rename the theme
   echo "Rename theme"
   curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
