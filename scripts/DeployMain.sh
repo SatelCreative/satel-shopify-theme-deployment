@@ -21,21 +21,17 @@ function deploy_main_branch(){
   if [[ -n $PRD_PARAMETER ]]; then
       PUBLISH_TEXT="DON'T PUBLISH "
   fi
-  
-  TIME=`TZ='US/Pacific' date`
-  NEW_THEME_NAME="${BRANCH_NAME^^}"
-  #This will rename the theme
+
+  TIME=$(TZ='US/Pacific' date '+%a %b %d %H:%M %Z %Y')  # Format without seconds
+  NEW_THEME_NAME="GitHub-${BRANCH_NAME^^}"  # Add GitHub- prefix
+
+  # This will rename the theme
   echo "Rename theme"
   curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
-        -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
-        -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
-        -H "Content-Type: application/json" 
-  
-  echo "check pwd and ls"
-  pwd
-  ls
-  cat config.yml  
-  
+      -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
+      -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
+      -H "Content-Type: application/json"
+
   # Deploy to main theme on Shopify
   echo "Deploying to main theme on Shopify"
   theme -e deployTheme deploy --allow-live; STATUS1=$?    
