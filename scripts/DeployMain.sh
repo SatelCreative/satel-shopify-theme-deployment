@@ -35,8 +35,9 @@ function deploy_main_branch(){
   pwd
   ls
   
-  # Deploy to live
-    theme -e deployTheme deploy --allow-live; STATUS1=$?    
+  # Deploy to main theme on Shopify
+  echo "Deploying to main theme on Shopify"
+  theme -e deployTheme deploy --allow-live; STATUS1=$?    
 
   # Return the status code of theme commands
   TOTAL=$((STATUS1 + STATUS2))
