@@ -21,10 +21,11 @@ inputs:
   github-token:
     description: Token for graphl calls
     required: false
+  # https://shopify.dev/docs/api/admin-rest/2025-04/resources/theme  
   shopify-api-version:
     description: Shopify api version
     required: false
-    default: "2024-01"
+    default: "2025-04"
   theme-files-location:
     description: location of all the theme files
     required: false
