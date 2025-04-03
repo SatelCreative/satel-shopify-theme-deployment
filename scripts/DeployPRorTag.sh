@@ -10,10 +10,10 @@ THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 |
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
-    THEME_NAME="${TAG_NAME}"
+    THEME_NAME="==== ${TAG_NAME} ===="
 else 
     THEME_NAME="${BRANCH_NAME}"
-    echo "THEME_NAME: ${BRANCH_NAME}"
+    echo "==== THEME_NAME: ${BRANCH_NAME} ===="
 fi
 
 deploy_pr_branch_or_tag() {
@@ -21,7 +21,7 @@ deploy_pr_branch_or_tag() {
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
-    echo "Existing THEME_ID=${THEME_ID}"
+    echo "==== Existing THEME_ID=${THEME_ID} ===="
     
     # Create the theme if it doesn't exist
     if [[ -z "${THEME_ID}" ]]; then
@@ -34,7 +34,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     if [[ -n $WORK_DIR ]]; then  # Only change directory if theme files are in a different folder than root
-        echo "WORK_DIR: ${WORK_DIR}"
+        echo "==== WORK_DIR: ${WORK_DIR} ===="
         cd "$WORK_DIR" || exit
     fi
 
@@ -42,7 +42,7 @@ deploy_pr_branch_or_tag() {
     theme -e downloadPublishedSettings download --live
     STATUS1=$?
     if [[ $STATUS1 -ne 0 ]]; then
-        echo "Failing deployment due to error in downloading live theme settings"
+        echo "==== Failing deployment due to error in downloading live theme settings"
         exit $STATUS1
     fi
 
