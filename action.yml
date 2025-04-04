@@ -19,7 +19,7 @@ inputs:
     description: Name of the current repo
     required: false
   github-token:
-    description: Token for graphl calls
+    description: Token for GraphQL calls
     required: false
   # https://shopify.dev/docs/api/admin-rest/2025-04/resources/theme  
   shopify-api-version:
