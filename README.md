@@ -8,11 +8,12 @@ A reusable GitHub Action to deploy Shopify themes across multiple environments a
 
 - Copies published theme settings when needed
 
-- Works with multiple `config.yml` profiles 
+- Works with multiple `config.yml` profiles by temporary modifying `config.yml.example`
 
 - Integrates with CI/CD workflows and Slack
 
 - Works with GitHub-hosted and self-hosted runners
+
 
 
 ## 🔧 Usage
@@ -113,6 +114,28 @@ jobs:
       SELF_HOSTED_RUNNER_TOKEN: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
+
+`config.yml.example` would like this: 
+
+```YAML
+downloadPublishedSettings:
+  password: API_KEY
+  theme_id: THEME_ID # This is not being used while deployment
+  store: STORE
+  ignore_files:
+    - sections/*.liquid
+    - snippets/*
+    - assets/*
+    - config/settings_schema.json
+    - layout/*
+    - locales/*
+
+deployTheme:
+  password: API_KEY
+  theme_id: TARGET_THEME_ID # Theme GitHub is deploying to
+  store: STORE
+  ```
+
 📘 **Notes**
 - API Key should be stored securely (e.g., in LastPass). It must come from a Shopify Custom App with theme read/write access. Name the app as `CI CD` on Shopify
 
