@@ -1,121 +1,121 @@
-# Satel shopify theme deployment action
-This centralized GitHub action deploys a theme to shopify admin
+# 🚀 Satel Shopify Theme Deployment Action
+A reusable GitHub Action to deploy Shopify themes across multiple environments and stores using a centralized configuration
 
-## Usage
+📦 Features
+- Deploys Shopify themes to multiple stores
+
+- Supports environment-specific deployments (dev, prd, etc.)
+
+- Copies published theme settings when needed
+
+- Works with multiple `config.yml` profiles 
+
+- Integrates with CI/CD workflows and Slack
+
+- Works with GitHub-hosted and self-hosted runners
+
+
+## 🔧 Usage
+Here’s an example of how to use this custom action within a workflow:
 ```YAML
+- name: Checkout
+  uses: actions/checkout@v4.2.0
+
+- name: Get branch name
+  run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV   
+
+- name: Set branch name (for non-main branches)
+  if: ${{ github.ref != 'refs/heads/main' }}
+  run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+
+- name: Get current tag name
+  id: tag-name
+  run: echo "TAG_NAME=$(git describe --tag --abbrev=0)" >> $GITHUB_ENV  
+
+- name: Get repo name
+  run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
+
+- name: Prepare config file
+  run: mv config.yml.example config.yml
+
+- name: Inject store name and API key into config
+  env:
+    STORE_NAME: ${{ inputs.store-name }} 
+    API_KEY: ${{ secrets.API_KEY }}
+  run: |
+    sed -i "s/password: API_KEY/password: $API_KEY/g" config.yml
+    sed -i "s/store: STORE/store: $STORE_NAME/g" config.yml
+
+- name: Install ThemeKit
+  if: ${{ runner.environment == 'github-hosted' }}
+  run: curl -s https://shopify.dev/themekit.py | sudo python3     
+
+- name: Set run ID (on PR open)
+  if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+  run: echo "RUN_ID=1" >> $GITHUB_ENV  
+
 - name: Deploy theme
-  uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
+  id: theme-deploy
+  uses: SatelCreative/satel-shopify-theme-deployment@2.0.0
   with: 
-    store-name: '<store-name>' # for multiple store '<store_name1 store_name2>'  
-    # exclude the .myshopfy.com part. 
-    theme-env: '<environment_you_are_deploying_to>'
-    copy-settings: true
-    main-theme-id: '<theme-id>' # theme that's live on the dev stores, for multiple store '<theme-id-1> <theme-id-2>'
+    store-name: ${{ inputs.store-name }}         # e.g., '<store1> <store2>'
+    theme-env: ${{ inputs.environment }}         # e.g., 'dev'
+    main-theme-id: ${{ inputs.main-theme-id }}   # e.g., '<id1> <id2>'
     repo-name: ${{ env.REPO_NAME }} 
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    shopify-api-version: '<stable-shopify-api-version>' # format: 2022-10
-    theme-files-location: <folder-for-theme-files> #same as work directory 
+    theme-files-location: ${{ inputs.work-dir }}
     current-branch-name: ${{ env.BRANCH_NAME }}
     tag-name: ${{ env.TAG_NAME }} 
-    org-name: '<github-organization-name>'
-    run-id: <integer>  # To copy setting from main the first time a PR is created, if the settings doesn't exist on github 
+    org-name: ${{ inputs.org-name }}
+    run-id: ${{ env.RUN_ID }}                    # Used for first-time PR settings copy
+    is-prd: true                                 # Adds 'DON’T PUBLISH' prefix for production themes
+
 ```
 
-Theme credentials can be stored as GitHub secrets as: 
-```JSON
-{
-	"<store-name-1>": "<store-name-1-password>",
-	"<store-name-2>": "<store-name-2-password>"
-}
-```
 
-In order to convert the theme secrets to JSON use the following action: 
-```YAML
-- name: Convert secrets to JSON
-  id: create-json
-  uses: jsdaniell/create-json@1.1.2
-  with:
-    name: "theme.json"
-    json: ${{ secrets.THEME_CONFIG_JSON }}
-```
-
-Combining above two with generating environment variables, the complete workflow would look like: 
+## 🔁  Reusable Workflow Example
+Below is a sample of how to call the above workflow from a reusable one:
 
 ```YAML
-name: Deploy theme
+# .github/workflows/storefront-deploy_dev.yml
+
+name: Deploy to Dev Store
 
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
+    paths:
+      - 'storefront/**'
+      - '.github/workflows/storefront-deploy_dev.yml'
+      - '.github/workflows/lib-storefront_deploy.yml'
   push:
+    paths:
+      - 'storefront/**'
+      - '.github/workflows/storefront-deploy_dev.yml'
+      - '.github/workflows/lib-storefront_deploy.yml'
     branches:
-      - main 
-    tags:
-      - "*" 
-          
+      - main
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   deploy-theme:
-    runs-on: ubuntu-latest
-    outputs:
-      preview-link: ${{ steps.theme-deploy.outputs.preview-link }} # theme preview links, used to append PR description
-      theme_id: ${{ steps.theme-deploy.outputs.theme_id }}
-    steps:
-        - name: Checkout
-          uses: actions/checkout@v2
+    uses: ./.github/workflows/lib-storefront_deploy.yml
+    with:
+      work-dir: storefront
+      environment: dev
+      store-name: '<STORE>.myshopify.com'
+      main-theme-id: '<MAIN-THEME_ID>' # this needs to exist before deployment
+      org-name: 'SatelCreative'
+    secrets:
+      API_KEY: ${{ secrets.DEV_STOREFRONT_API_KEY }}    # Must have theme read/write permissions
+      SELF_HOSTED_RUNNER_TOKEN: ${{ secrets.SELF_HOSTED_RUNNER_TOKEN }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+```
+📘 **Notes**
+- API Key should be stored securely (e.g., in LastPass). It must come from a Shopify Custom App with theme read/write access. Name the app as `CI CD` on Shopify
 
-        - name: Get branch name
-          run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV   
-        
-        - name: Set branch name
-          if: ${{ github.ref != 'refs/heads/main' }}
-          run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+- The `main-theme-id` input is used for deploying changes to the live theme when working in a development environment.
 
-        - name: Current tag name
-          id: tag-name
-          run:  echo "TAG_NAME=$(git describe --tag --abbrev=0)" >> $GITHUB_ENV  
-
-        - name: Get repo name
-          run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
-
-        - name: Get run id
-          if: ${{ github.event_name == 'pull_request' &&  github.event.action == 'opened'}}
-          run: echo "RUN_ID=1" >> $GITHUB_ENV  
-
-        - name: Convert secrets to JSON
-          id: create-json
-          uses: jsdaniell/create-json@1.1.2
-          with:
-            name: "theme.json"
-            json: ${{ secrets.THEME_CONFIG_JSON }}
-            
-        - name: Deploy theme
-          id: theme-deploy
-          uses: SatelCreative/satel-shopify-theme-deployment@1.0.0
-          with: 
-            store-name: '<store-name(s)>'  
-            theme-env: '<environment>'
-            copy-settings: true
-            main-theme-id: '<theme-id(s)>' 
-            repo-name: ${{ env.REPO_NAME }} 
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            shopify-api-version: '<stable-shopify-api-version>'
-            theme-files-location: <folder-for-theme-files> 
-            current-branch-name: ${{ env.BRANCH_NAME }}
-            tag-name: ${{ env.TAG_NAME }} 
-            org-name: '<github-organization-name>'
-            run-id: ${{ env.RUN_ID }} 
-
-  preview-link:
-    needs: deploy-theme
-    runs-on: ubuntu-latest
-    if: ${{ github.ref != 'refs/heads/main' && !contains(github.ref, 'refs/tags/') }}
-    steps:
-      - name: Add links in PR description
-        uses: SatelCreative/satel-update-pr-body@1.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          body: "## ${{ needs.deploy-theme.outputs.preview-link }}"            
-```            
+- If no DEV store exists, the `is-prd` flag ensures your production themes are clearly marked with a DON’T PUBLISH prefix.

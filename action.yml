@@ -8,10 +8,6 @@ inputs:
   theme-env:
     description: Name of the environment for theme deployment
     required: true
-  copy-settings:
-    description: Parameter to check if the setting need to copy
-    required: false
-    default: "false"
   main-theme-id:
     description: ID of main theme
     required: false
@@ -80,7 +76,6 @@ runs:
       env:
         STORE_NAME: ${{ inputs.store-name }}
         THEME_ENV: ${{ inputs.theme-env }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
         WORK_DIR: ${{ inputs.theme-files-location }}
         BRANCH_NAME: ${{ inputs.current-branch-name }}
@@ -95,7 +90,6 @@ runs:
       env:
         STORE_NAME: ${{ inputs.store-name }}
         BRANCH_NAME: ${{ inputs.current-branch-name }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
         MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
         THEME_ENV: ${{ inputs.theme-env }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
