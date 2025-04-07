@@ -3,13 +3,13 @@
 function delete_inactive_themes() {
     STORE_NAME=$1
 
-    if [[ -n $WORK_DIR ]] #only change dir if theme files are in a different folder than root
+    if [[ -n $WORK_DIR ]] # only change dir if theme files are in a different folder than root
     then
-        echo "WORK_DIR ${WORK_DIR}"
+        echo "==== WORK_DIR ${WORK_DIR} ===="
         cd $WORK_DIR
     fi  
 
-    THEMEKIT_PASSWORD=`grep -E 'password:\s*.*' config.yml | sed 's/.*password:\s*//'`
+    THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
@@ -21,7 +21,7 @@ function delete_inactive_themes() {
     for THEME in "${THEME_LIST[@]}"
     do    
         if [[ ! "${BRANCH_NAMES[*]}" =~ "${THEME}" ]]; then
-            echo "Themes that will be deleted PR:${THEME} on ${STORE_NAME}"
+            echo "==== Themes that will be deleted PR:${THEME} on ${STORE_NAME} ===="
             THEME_ID=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep -i ${THEME} | cut -d "[" -f 2 | cut -d "]" -f 1`
     
             THEME=$(echo -n "${THEME}" | tr -d '[:space:]')
@@ -37,10 +37,14 @@ function delete_inactive_themes() {
             if [[ $HTTP_CODE == "200" ]]; then
                 echo "Successfully deleted theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}"
             else
-                echo "Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
-                echo "Response body: ${RESPONSE_BODY}"
+                echo "==== Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
+                echo "==== Response body: ${RESPONSE_BODY} ===="
             fi
+            
+        else
+            echo "==== No GitHub themes to delete on ${STORE_NAME} ==== "    
         fi
+        
     done
 }
 

@@ -8,10 +8,6 @@ inputs:
   theme-env:
     description: Name of the environment for theme deployment
     required: true
-  copy-settings:
-    description: Parameter to check if the setting need to copy
-    required: false
-    default: "false"
   main-theme-id:
     description: ID of main theme
     required: false
@@ -19,12 +15,13 @@ inputs:
     description: Name of the current repo
     required: false
   github-token:
-    description: Token for graphl calls
+    description: Token for GraphQL calls
     required: false
+  # https://shopify.dev/docs/api/admin-rest/2025-04/resources/theme  
   shopify-api-version:
     description: Shopify api version
     required: false
-    default: "2024-01"
+    default: "2025-04"
   theme-files-location:
     description: location of all the theme files
     required: false
@@ -73,17 +70,18 @@ runs:
 
     - name: Deploy a PR or a Tag
       id: deploy-pr
+      # Only run on the 1st commit, as per Alex. 
+      # The rest will be done directly on Shopify as bug fixes.
+      if: ${{ inputs.run-id == '1' }}
       env:
         STORE_NAME: ${{ inputs.store-name }}
         THEME_ENV: ${{ inputs.theme-env }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
         WORK_DIR: ${{ inputs.theme-files-location }}
         BRANCH_NAME: ${{ inputs.current-branch-name }}
         TAG_NAME: ${{ inputs.tag-name }}
-        RUN_ID: ${{ inputs.run-id }}
       run: |
-        if [[ "${{ inputs.current-branch-name }}" != 'main' ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
+        if [[ "${{ inputs.current-branch-name }}" != "main" ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
           ${{ github.action_path }}/scripts/DeployPRorTag.sh
         fi
       shell: bash
@@ -92,7 +90,6 @@ runs:
       env:
         STORE_NAME: ${{ inputs.store-name }}
         BRANCH_NAME: ${{ inputs.current-branch-name }}
-        COPY_SETTINGS: ${{ inputs.copy-settings }}
         MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
         THEME_ENV: ${{ inputs.theme-env }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
