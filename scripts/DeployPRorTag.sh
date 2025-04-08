@@ -84,19 +84,11 @@ deploy_pr_branch_or_tag() {
 }
 
 # Parse stores and API keys into arrays
-IFS=' ' read -r -a STORE_ARRAY <<< "${STORE_NAME}"
-echo "STORE----=${STORE_ARRAY[@]}"
-
-# Iterate and deploy
-for index in "${STORE_ARRAY[@]}"; do
-    store="${STORE_ARRAY[$index]}"
-    
-    if [[ -z "$store" || -z "$key" ]]; then
-        echo "⚠️ Skipping empty store or API key at index ${index}"
-        continue
-    fi
+# Iterate over stores and deploy the theme
+stores=("${STORE_NAME}")
+for store in "${stores[@]}"; do
     echo "====== Running deploy PR or Tag on store ${store} ====="
-    deploy_pr_branch_or_tag "$store"
+    deploy_pr_branch_or_tag "${store}"
 done
 
 # Output theme IDs and preview links for GitHub
