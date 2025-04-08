@@ -3,7 +3,7 @@
 function deploy_main_branch(){
     local STORE_NAME="$1"
     local THEMEKIT_PASSWORD="$2"
-    MAIN_THEME_IDS="$3"
+    MAIN_THEME_ID="$3"
     PUBLISH_TEXT=""
 
     # Only change dir if theme files are in a different folder than root
@@ -18,8 +18,6 @@ function deploy_main_branch(){
     cp config.yml.example config.yml
     sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" config.yml
     sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
-
-    cat config.yml
     
     # LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
     # echo "THEME LIST = ${LIST}"
@@ -32,8 +30,8 @@ function deploy_main_branch(){
     #     exit $STATUS1
     # fi
 
-    # sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_IDS}/" config.yml
-
+    sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_ID}/" config.yml
+    cat config.yml
     # if [[ -n $PRD_PARAMETER ]]; then
     #     PUBLISH_TEXT="DON'T PUBLISH "
     # fi
@@ -43,8 +41,8 @@ function deploy_main_branch(){
 
     # # This will rename the theme
     # echo "==== Rename theme ==== "
-    # curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_IDS}\"}}" \
-    #     -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_IDS}.json" \
+    # curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_ID}\"}}" \
+    #     -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_ID}.json" \
     #     -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
     #     -H "Content-Type: application/json"
 
@@ -68,7 +66,7 @@ function deploy_main_branch(){
 # for store in "${stores[@]}"
 # do
 #   echo "====== Running deploy main on store ${store} ======" 
-#   ids=( ${MAIN_THEME_IDS} )
+#   ids=( ${MAIN_THEME_ID} )
 #   deploy_main_branch "${store}" "${ids[i]}" 
 #   i=$((i+1))
 # done 
