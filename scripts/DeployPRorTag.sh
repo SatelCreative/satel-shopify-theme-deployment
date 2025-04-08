@@ -9,17 +9,30 @@ THEME_ID=""
 get_password_for_store() {
     local TARGET_STORE="$1"
     awk -v target="$TARGET_STORE" '
-      /^[^[:space:]]/ { current_block = $1; password = "" }  # top-level key resets state
-      $1 == "password:" { password = $2 }
-      $1 == "store:" {
+    /^[^[:space:]]/ {
+        current_block = $1
+        password = ""
+        stores = ""
+    }
+    $1 == "password:" {
+        password = $2
+    }
+    $1 == "store:" {
         for (i = 2; i <= NF; i++) {
-          if ($i == target) {
-            print password; exit
-          }
+            stores = stores " " $i
         }
-      }
+        # Now check if target store is in the list
+        split(stores, store_list, " ")
+        for (i in store_list) {
+            if (store_list[i] == target) {
+                print password
+                exit
+            }
+        }
+    }
     ' storefront/config.yml
 }
+
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
@@ -37,7 +50,10 @@ deploy_pr_branch_or_tag() {
 
    # cat storefront/config.yml
 
-    echo "=====THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD}"
+    echo "===== Getting THEMEKIT_PASSWORD for ${STORE_NAME} ====="
+    THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
+    echo "===== THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD} ====="
+
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
@@ -103,7 +119,6 @@ for store in "${stores[@]}"; do
     echo "====== Running deploy PR or Tag on store ${store} ====="
     echo "Parsed stores:"
     printf '%s\n' "${stores[@]}"
-
     deploy_pr_branch_or_tag "${store}"
 done
 
