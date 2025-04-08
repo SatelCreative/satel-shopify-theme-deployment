@@ -7,11 +7,13 @@ THEME_ID=""
 
 # Function to get the password for a given store from the config file
 get_password_for_store() {
-  local TARGET_STORE="$1"
-  awk -v target="$TARGET_STORE" '
-    /^[^[:space:]]/ { current_block = $1; password = "" }
-    $1 == "password:" { password = $2 }
-    $1 == "store:" {
+  local TARGET_BLOCK="$1"
+  local TARGET_STORE="$2"
+  awk -v block="$TARGET_BLOCK" -v target="$TARGET_STORE" '
+    $0 ~ "^" block ":" { in_block = 1; password = "" }
+    /^[^[:space:]]/ && $0 !~ "^" block ":" { in_block = 0 }
+    in_block && $1 == "password:" { password = $2 }
+    in_block && $1 == "store:" {
       for (i = 2; i <= NF; i++) {
         if ($i == target) {
           print password
@@ -21,6 +23,7 @@ get_password_for_store() {
     }
   ' storefront/config.yml
 }
+
 
 
 
@@ -36,12 +39,11 @@ deploy_pr_branch_or_tag() {
     local STORE_NAME="$1"
 
     # Get THEMEKIT password specific to this store
-    THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
-
+    THEMEKIT_PASSWORD=$(get_password_for_store "downloadPublishedSettings" "$STORE_NAME")
    # cat storefront/config.yml
 
     echo "===== Getting THEMEKIT_PASSWORD for ${STORE_NAME} ====="
-    THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
+    #THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
     echo "===== THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD} ====="
 
 
