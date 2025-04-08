@@ -21,6 +21,7 @@ deploy_pr_branch_or_tag() {
     fi
 
     local STORE_NAME="$1"
+    local THEMEKIT_PASSWORD="$2"
 
     echo "==== Deploying for ${STORE_NAME} ===="
 
@@ -86,11 +87,13 @@ deploy_pr_branch_or_tag() {
 }
 
 # Iterate over stores and deploy the theme
-stores=( ${STORE_NAME} )
+stores=(${STORE_NAME})
+api_key=(${API_KEY} )
 for store in "${stores[@]}"
     do
     echo "====== Running deploy PR or Tag on store ${store} ====="  
-    deploy_pr_branch_or_tag "${store}"
+    deploy_pr_branch_or_tag "${store} ${api_key}" 
+    done
 done 
 
 # Output theme IDs and preview links for GitHub

@@ -5,6 +5,9 @@ inputs:
   store-name:
     description: Name of the store
     required: true
+  api-key:
+    description: API key for the store
+    required: true    
   theme-env:
     description: Name of the environment for theme deployment
     required: true
@@ -75,6 +78,7 @@ runs:
       #if: ${{ inputs.run-id == '1' }}
       env:
         STORE_NAME: ${{ inputs.store-name }}
+        API_KEY: ${{ inputs.api-key }}
         THEME_ENV: ${{ inputs.theme-env }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
         WORK_DIR: ${{ inputs.theme-files-location }}
