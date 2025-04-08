@@ -88,14 +88,29 @@ deploy_pr_branch_or_tag() {
 }
 
 # Iterate over stores and deploy the theme
-stores=($STORE_NAME)
-api_keys=($API_KEY)
+# stores=($STORE_NAME)
+# api_keys=($API_KEY)
+# Split STORE_NAME and API_KEY into arrays by comma
+IFS=',' read -ra STORES <<< "$STORE_NAME"
+IFS=',' read -ra API_KEYS <<< "$API_KEY"
 
-for i in "${!stores[@]}"; do
-    store="${stores[$i]}"
-    key="${api_keys[$i]}"
-    echo "====== Running deploy PR or Tag on store ${store}  & ${key} ====="
-    # deploy_pr_branch_or_tag "${store}" "${key}"
+# Check if the number of stores matches the number of API keys
+if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
+  echo "ERROR: The number of stores and API keys do not match!"
+  exit 1
+fi
+
+# Iterate over each store and corresponding API key
+for i in "${!STORES[@]}"; do
+    store="${STORES[$i]}"
+    api_key="${API_KEYS[$i]}"
+    echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} ====="
+
+    # Set the API key for the store
+    THEMEKIT_PASSWORD="${api_key}"
+    
+    # Call your deploy function
+    #deploy_pr_branch_or_tag "$store"
 done
 
 
