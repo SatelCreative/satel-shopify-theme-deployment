@@ -5,8 +5,21 @@ PREVIEW_LINKS=()
 THEME_IDS=()
 THEME_ID=""
 
-# Extract THEMEKIT password from configuration file
-THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 | sed 's/.*password:\s*//')
+# Function to get the password for a given store from the config file
+get_password_for_store() {
+    local TARGET_STORE="$1"
+    awk -v target="$TARGET_STORE" '
+      /^[^[:space:]]/ { current_block = $1; password = "" }  # top-level key resets state
+      $1 == "password:" { password = $2 }
+      $1 == "store:" {
+        for (i = 2; i <= NF; i++) {
+          if ($i == target) {
+            print password; exit
+          }
+        }
+      }
+    ' storefront/config.yml
+}
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
 if [[ -n "${TAG_NAME}" ]]; then
@@ -18,6 +31,9 @@ fi
 
 deploy_pr_branch_or_tag() {
     local STORE_NAME="$1"
+
+    # Get THEMEKIT password specific to this store
+    THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
