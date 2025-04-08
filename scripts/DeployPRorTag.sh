@@ -9,9 +9,10 @@ THEME_ID=""
 get_password_for_store() {
   local TARGET_BLOCK="$1"
   local TARGET_STORE="$2"
+  echo "=== Matching block: $TARGET_BLOCK and store: $STORE_NAME"
   awk -v block="$TARGET_BLOCK" -v target="$TARGET_STORE" '
-    $0 ~ "^" block ":" { in_block = 1; password = "" }
-    /^[^[:space:]]/ && $0 !~ "^" block ":" { in_block = 0 }
+    $0 ~ "^" block ":"[[:space:]]*$ { in_block = 1; password = "" }
+    /^[^[:space:]]/ && $0 !~ "^" block ":"[[:space:]]*$ { in_block = 0 }
     in_block && $1 == "password:" { password = $2 }
     in_block && $1 == "store:" {
       for (i = 2; i <= NF; i++) {
@@ -23,6 +24,7 @@ get_password_for_store() {
     }
   ' storefront/config.yml
 }
+
 
 
 
@@ -49,6 +51,8 @@ deploy_pr_branch_or_tag() {
     echo "===== Getting THEMEKIT_PASSWORD for deploy ${STORE_NAME} ====="
     THEMEKIT_PASSWORD=$(get_password_for_store "deployTheme" "$STORE_NAME")
     echo "===== THEMEKIT_PASSWORD deploy: ${THEMEKIT_PASSWORD} ====="
+
+    
 
 
 
@@ -114,8 +118,8 @@ deploy_pr_branch_or_tag() {
 IFS=' ' read -r -a stores <<< "${STORE_NAME}"
 for store in "${stores[@]}"; do
     echo "====== Running deploy PR or Tag on store ${store} ====="
-    echo "Parsed stores:"
-    printf '%s\n' "${stores[@]}"
+    echo "Parsed store:"
+    printf '%s\n' "${stores}"
     deploy_pr_branch_or_tag "${store}"
 done
 
