@@ -53,7 +53,7 @@ deploy_pr_branch_or_tag() {
 
 
     echo "===== Downloading theme settings from live theme ====="
-    theme -e downloadPublishedSettings --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"  download --live
+    theme -e downloadPublishedSettings download --live
     STATUS1=$?
     if [[ $STATUS1 -ne 0 ]]; then
         echo "==== Failing deployment due to error in downloading live theme settings"
