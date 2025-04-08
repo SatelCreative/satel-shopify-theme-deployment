@@ -19,35 +19,25 @@ A reusable GitHub Action to deploy Shopify themes across multiple environments a
 ## 🔧 Usage
 Here’s an example of how to use this custom action within a workflow:
 ```YAML
+
 - name: Checkout
-  uses: actions/checkout@v4.2.0
+  uses: actions/checkout@v4.2.2
 
 - name: Get branch name
   run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV   
 
-- name: Set branch name (for non-main branches)
+- name: Set branch name without / (for non-main branches)
   if: ${{ github.ref != 'refs/heads/main' }}
   run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
 
 - name: Get current tag name
   id: tag-name
-  run: echo "TAG_NAME=$(git describe --tag --abbrev=0)" >> $GITHUB_ENV  
+  run:  echo "TAG_NAME=$(git describe --tag --abbrev=0)" >> $GITHUB_ENV  
 
 - name: Get repo name
   run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
 
-- name: Prepare config file
-  run: mv config.yml.example config.yml
-
-- name: Inject store name and API key into config
-  env:
-    STORE_NAME: ${{ inputs.store-name }} 
-    API_KEY: ${{ secrets.API_KEY }}
-  run: |
-    sed -i "s/password: API_KEY/password: $API_KEY/g" config.yml
-    sed -i "s/store: STORE/store: $STORE_NAME/g" config.yml
-
-- name: Install ThemeKit
+- name: Install themekit
   if: ${{ runner.environment == 'github-hosted' }}
   run: curl -s https://shopify.dev/themekit.py | sudo python3     
 
@@ -60,6 +50,7 @@ Here’s an example of how to use this custom action within a workflow:
   uses: SatelCreative/satel-shopify-theme-deployment@2.0.0
   with: 
     store-name: ${{ inputs.store-name }}         # e.g., '<store1> <store2>'
+    api-key: "${{ secrets.store-1 }},${{ secrets.store2 }},...."
     theme-env: ${{ inputs.environment }}         # e.g., 'dev'
     main-theme-id: ${{ inputs.main-theme-id }}   # e.g., '<id1> <id2>'
     repo-name: ${{ env.REPO_NAME }} 
@@ -68,7 +59,7 @@ Here’s an example of how to use this custom action within a workflow:
     current-branch-name: ${{ env.BRANCH_NAME }}
     tag-name: ${{ env.TAG_NAME }} 
     org-name: ${{ inputs.org-name }}
-    run-id: ${{ env.RUN_ID }}                    # Used for first-time PR settings copy
+    run-id: ${{ env.RUN_ID }}                    # Used for a new PR
     is-prd: true                                 # Adds 'DON’T PUBLISH' prefix for production themes
 
 ```
@@ -106,8 +97,8 @@ jobs:
     with:
       work-dir: storefront
       environment: dev
-      store-name: '<STORE>.myshopify.com'
-      main-theme-id: '<MAIN-THEME_ID>' # this needs to exist before deployment
+      store-name: '<STORE1>.myshopify.com,<STORE2>.myshopify.com,....'
+      main-theme-id: '<MAIN-THEME_ID1> <MAIN-THEME_ID2> .....' # this needs to exist before deployment
       org-name: 'SatelCreative'
     secrets:
       API_KEY: ${{ secrets.DEV_STOREFRONT_API_KEY }}    # Must have theme read/write permissions
@@ -115,7 +106,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
-`config.yml.example` would like this: 
+`config.yml.example` would like this:
 
 ```YAML
 downloadPublishedSettings:
