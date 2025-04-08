@@ -35,7 +35,7 @@ deploy_pr_branch_or_tag() {
     # Get THEMEKIT password specific to this store
     THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
 
-    cat storefront/config.yml
+   # cat storefront/config.yml
 
     echo "=====THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD}"
 
