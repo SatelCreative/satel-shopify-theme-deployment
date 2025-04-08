@@ -26,11 +26,11 @@ Here’s an example of how to use this custom action within a workflow:
 - name: Get branch name
   run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/*/})" >> $GITHUB_ENV   
 
-- name: Set branch name
+- name: Set branch name without / (for non-main branches)
   if: ${{ github.ref != 'refs/heads/main' }}
   run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
 
-- name: Current tag name
+- name: Get current tag name
   id: tag-name
   run:  echo "TAG_NAME=$(git describe --tag --abbrev=0)" >> $GITHUB_ENV  
 
@@ -97,7 +97,7 @@ jobs:
     with:
       work-dir: storefront
       environment: dev
-      store-name: '<STORE1>.myshopify.com,<STORE12>.myshopify.com,....'
+      store-name: '<STORE1>.myshopify.com,<STORE2>.myshopify.com,....'
       main-theme-id: '<MAIN-THEME_ID1> <MAIN-THEME_ID2> .....' # this needs to exist before deployment
       org-name: 'SatelCreative'
     secrets:

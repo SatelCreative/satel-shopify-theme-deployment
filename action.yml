@@ -59,6 +59,7 @@ runs:
       if: ${{ inputs.run-id == '1' }} 
       env:
         STORE_NAME: ${{ inputs.store-name }}
+        API_KEY: ${{ inputs.api-key }}
         REPO_NAME: ${{ inputs.repo-name }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
