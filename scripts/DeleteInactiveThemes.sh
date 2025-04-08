@@ -13,9 +13,15 @@ function delete_inactive_themes() {
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
     THEME_LIST=( $THEME_NAMES )
+    
+    if [ ${#THEME_LIST[@]} -eq 0 ]; then
+        echo "==== No PR themes found for ${STORE_NAME}, skipping... ===="
+        return
+    fi
 
     get_branch_list
     BRANCH_NAMES=( $BRANCH_LIST )
+
 
     for THEME in "${THEME_LIST[@]}"
     do    
