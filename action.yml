@@ -72,7 +72,7 @@ runs:
       id: deploy-pr
       # Only run on the 1st commit, as per Alex. 
       # The rest will be done directly on Shopify as bug fixes.
-      if: ${{ inputs.run-id == '1' }}
+      #if: ${{ inputs.run-id == '1' }}
       env:
         STORE_NAME: ${{ inputs.store-name }}
         THEME_ENV: ${{ inputs.theme-env }}
@@ -86,17 +86,17 @@ runs:
         fi
       shell: bash
 
-    - name: Deploy Main
-      env:
-        STORE_NAME: ${{ inputs.store-name }}
-        BRANCH_NAME: ${{ inputs.current-branch-name }}
-        MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
-        THEME_ENV: ${{ inputs.theme-env }}
-        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-        WORK_DIR: ${{ inputs.theme-files-location }}
-        PRD_PARAMETER: ${{ inputs.is-prd }}
-      run: |
-        if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
-          ${{ github.action_path }}/scripts/DeployMain.sh
-        fi
-      shell: bash
+    # - name: Deploy Main
+    #   env:
+      #   STORE_NAME: ${{ inputs.store-name }}
+      #   BRANCH_NAME: ${{ inputs.current-branch-name }}
+      #   MAIN_THEME_IDS: ${{ inputs.main-theme-id }}
+      #   THEME_ENV: ${{ inputs.theme-env }}
+      #   SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+      #   WORK_DIR: ${{ inputs.theme-files-location }}
+      #   PRD_PARAMETER: ${{ inputs.is-prd }}
+      # run: |
+      #   if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
+      #     ${{ github.action_path }}/scripts/DeployMain.sh
+      #   fi
+      # shell: bash

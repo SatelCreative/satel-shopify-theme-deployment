@@ -92,7 +92,7 @@ for index in "${!STORE_ARRAY[@]}"; do
         echo "⚠️ Skipping empty store or API key at index ${index}"
         continue
     fi
-
+    echo "====== Running deploy PR or Tag on store ${store} ====="
     deploy_pr_branch_or_tag "$store" "$key"
 done
 
