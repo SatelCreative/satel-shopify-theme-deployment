@@ -107,10 +107,10 @@ for i in "${!STORES[@]}"; do
     echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} ====="
 
     # Set the API key for the store
-    THEMEKIT_PASSWORD="${api_key}"
+    #THEMEKIT_PASSWORD="${api_key}"
     
     # Call your deploy function
-    #deploy_pr_branch_or_tag "$store"
+    deploy_pr_branch_or_tag "$store ${api_key}"
 done
 
 
