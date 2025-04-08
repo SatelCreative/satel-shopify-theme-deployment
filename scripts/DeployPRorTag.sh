@@ -6,25 +6,16 @@ THEME_IDS=()
 THEME_ID=""
 
 # Function to get the password for a given store from the config file
+
+
 get_password_for_store() {
   local TARGET_BLOCK="$1"
   local TARGET_STORE="$2"
-  echo "=== Matching block: $TARGET_BLOCK and store: $STORE_NAME"
-  awk -v block="$TARGET_BLOCK" -v target="$TARGET_STORE" '
-    $0 ~ ("^" block ":\\s*$") { in_block = 1; password = "" }
-    /^[^[:space:]]/ && $0 !~ ("^" block ":\\s*$") { in_block = 0 }
-    in_block && $1 == "password:" { password = $2 }
-    in_block && $1 == "store:" {
-      for (i = 2; i <= NF; i++) {
-        if ($i == target) {
-          print password
-          exit
-        }
-      }
-    }
-  ' storefront/config.yml
-}
 
+  echo "=== Matching block: $TARGET_BLOCK and store: $STORE_NAME"
+
+  yq -r ".${TARGET_BLOCK} | select(.store | test(\"\\b${TARGET_STORE}\\b\")) | .password" storefront/config.yml
+}
 
 
 
