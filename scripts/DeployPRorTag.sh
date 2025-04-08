@@ -11,8 +11,8 @@ get_password_for_store() {
   local TARGET_STORE="$2"
   echo "=== Matching block: $TARGET_BLOCK and store: $STORE_NAME"
   awk -v block="$TARGET_BLOCK" -v target="$TARGET_STORE" '
-    $0 ~ "^" block ":"[[:space:]]*$ { in_block = 1; password = "" }
-    /^[^[:space:]]/ && $0 !~ "^" block ":"[[:space:]]*$ { in_block = 0 }
+    $0 ~ ("^" block ":\\s*$") { in_block = 1; password = "" }
+    /^[^[:space:]]/ && $0 !~ ("^" block ":\\s*$") { in_block = 0 }
     in_block && $1 == "password:" { password = $2 }
     in_block && $1 == "store:" {
       for (i = 2; i <= NF; i++) {
@@ -24,6 +24,7 @@ get_password_for_store() {
     }
   ' storefront/config.yml
 }
+
 
 
 
