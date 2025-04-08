@@ -84,7 +84,7 @@ IFS=' ' read -r -a STORE_ARRAY <<< "${STORES}"
 IFS=' ' read -r -a API_KEY_ARRAY <<< "${API_KEYS}"
 
 # Iterate and deploy
-for index in "${!STORE_ARRAY[@]}"; do
+for index in "${STORE_ARRAY[@]}"; do
     store="${STORE_ARRAY[$index]}"
     key="${API_KEY_ARRAY[$index]}"
     
