@@ -82,6 +82,7 @@ deploy_pr_branch_or_tag() {
 # Parse stores and API keys into arrays
 IFS=' ' read -r -a STORE_ARRAY <<< "${STORES}"
 IFS=' ' read -r -a API_KEY_ARRAY <<< "${API_KEYS}"
+echo "STORE----=${STORE_ARRAY[@]}"
 
 # Iterate and deploy
 for index in "${STORE_ARRAY[@]}"; do
