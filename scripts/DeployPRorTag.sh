@@ -27,13 +27,13 @@ deploy_pr_branch_or_tag() {
     echo "==== Deploying for ${STORE_NAME} ===="
 
     # Copy and update config
-    # cp config.yml.example config.yml
-    # sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" config.yml
-    # sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
+    cp config.yml.example config.yml
+    sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" config.yml
+    sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
 
     # Extract THEMEKIT password from configuration file
     #THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
-    #cat config.yml
+    cat config.yml
     echo "YOHO ${STORE_NAME} is ${THEMEKIT_PASSWORD}"
 
 
