@@ -91,8 +91,8 @@ echo "==== API_KEYS: ${API_KEYS[@]} ===="
 
 #Check if the number of stores matches the number of API keys
 if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
-  echo "ERROR: The number of stores and API keys do not match!"
-  exit 1
+    echo "ERROR: The number of stores and API keys do not match!"
+    exit 1
 fi
 
 # Iterate over each store and corresponding API key
