@@ -83,8 +83,10 @@ deploy_pr_branch_or_tag() {
 ## Start of the script
 IFS=',' read -ra STORES <<< "$STORE_NAME"
 IFS=',' read -ra API_KEYS <<< "$API_KEY"
+echo "==== STORES: ${STORES[@]} ===="
+echo "==== API_KEYS: ${API_KEYS[@]} ===="
 
-Check if the number of stores matches the number of API keys
+#Check if the number of stores matches the number of API keys
 if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
   echo "ERROR: The number of stores and API keys do not match!"
   exit 1
