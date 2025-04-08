@@ -32,8 +32,9 @@ deploy_pr_branch_or_tag() {
     sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
 
     # Extract THEMEKIT password from configuration file
-    THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
+    #THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
     cat config.yml
+    echo "YOHO ${STORE_NAME} is ${THEMEKIT_PASSWORD}"
 
 
     # Get existing THEME_ID
