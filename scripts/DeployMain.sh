@@ -31,14 +31,13 @@ function deploy_main_branch(){
     fi
 
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${MAIN_THEME_ID}/" config.yml
-    cat config.yml
+
     if [[ -n $PRD_PARAMETER ]]; then
         PUBLISH_TEXT="DON'T PUBLISH "
     fi
 
     TIME=$(TZ='US/Pacific' date '+%b %d %H:%M %Z %Y')  # Shortened date format
     NEW_THEME_NAME="GITHUB-${BRANCH_NAME^^}"  # Add GitHub- prefix
-    echo "NEW NAME = ${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME}"
     # This will rename the theme
     echo "==== Rename theme on ${store} ==== "
     curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME}\", \"id\": \"${MAIN_THEME_ID}\"}}" \
@@ -61,7 +60,6 @@ function deploy_main_branch(){
     cd .. || exit 1
 }
 
-
 STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 IDS=( ${MAIN_THEME_IDS} )
@@ -75,5 +73,4 @@ for i in "${!STORES[@]}"; do
     id="${IDS[$i]}"
     echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} and MAIN THEME ID: ${id} ====="
     deploy_main_branch "${store}" "${api_key}" "${id}" 
-    
 done

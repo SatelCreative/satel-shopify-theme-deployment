@@ -79,7 +79,7 @@ API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]
 echo "==== STORES: ${STORES[@]} ===="
 echo "==== API_KEYS: ${API_KEYS[@]} ===="
 
-#Check if the number of stores matches the number of API keys
+# Check if the number of stores matches the number of API keys
 if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
     echo "ERROR: The number of stores and API keys do not match!"
     exit 1
@@ -97,7 +97,7 @@ API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]
 echo "==== STORES: ${STORES[@]} ===="
 echo "==== API_KEYS: ${API_KEYS[@]} ===="
 
-#Check if the number of stores matches the number of API keys
+# Check if the number of stores matches the number of API keys
 if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
     echo "ERROR: The number of stores and API keys do not match!"
     exit 1
