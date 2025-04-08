@@ -73,25 +73,8 @@ function get_branch_list(){
     fi         
 }
 
+
 ## Start of the script
-STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
-API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
-echo "==== STORES: ${STORES[@]} ===="
-echo "==== API_KEYS: ${API_KEYS[@]} ===="
-
-# Check if the number of stores matches the number of API keys
-if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
-    echo "ERROR: The number of stores and API keys do not match!"
-    exit 1
-fi
-
-# Iterate over each store and corresponding API key
-for i in "${!STORES[@]}"; do
-    store="${STORES[$i]}"
-    api_key="${API_KEYS[$i]}"
-    echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} ====="
-
-    ## Start of the script
 STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 echo "==== STORES: ${STORES[@]} ===="
