@@ -1,15 +1,14 @@
 #!/bin/bash
 
 function delete_inactive_themes() {
-    STORE_NAME=$1
+    local STORE_NAME="$1"
+    local THEMEKIT_PASSWORD="$2"
 
     if [[ -n $WORK_DIR ]] # only change dir if theme files are in a different folder than root
     then
         echo "==== WORK_DIR ${WORK_DIR} ===="
         cd $WORK_DIR
     fi  
-
-    THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
 
     # grab all the themes except for main and sandboxes as we dont want to delete theme
     THEME_NAMES=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}" | grep 'PR: ' | awk '{print $3}'`
@@ -40,7 +39,6 @@ function delete_inactive_themes() {
                 echo "==== Failed to delete theme PR:${THEME} with ID:${THEME_ID} from ${STORE_NAME}. Response code: ${HTTP_CODE}"
                 echo "==== Response body: ${RESPONSE_BODY} ===="
             fi
-            
         else
             echo "==== No GitHub themes to delete on ${STORE_NAME} ==== "    
         fi
@@ -75,9 +73,42 @@ function get_branch_list(){
     fi         
 }
 
-stores=( ${STORE_NAME} )
-for store in "${stores[@]}"
-do
-    echo "====== Running delete inactive themes on store ${store} ======"  
-    delete_inactive_themes "${store}"
+## Start of the script
+STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+echo "==== STORES: ${STORES[@]} ===="
+echo "==== API_KEYS: ${API_KEYS[@]} ===="
+
+#Check if the number of stores matches the number of API keys
+if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
+    echo "ERROR: The number of stores and API keys do not match!"
+    exit 1
+fi
+
+# Iterate over each store and corresponding API key
+for i in "${!STORES[@]}"; do
+    store="${STORES[$i]}"
+    api_key="${API_KEYS[$i]}"
+    echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} ====="
+
+    ## Start of the script
+STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+echo "==== STORES: ${STORES[@]} ===="
+echo "==== API_KEYS: ${API_KEYS[@]} ===="
+
+#Check if the number of stores matches the number of API keys
+if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
+    echo "ERROR: The number of stores and API keys do not match!"
+    exit 1
+fi
+
+# Iterate over each store and corresponding API key
+for i in "${!STORES[@]}"; do
+    store="${STORES[$i]}"
+    api_key="${API_KEYS[$i]}"
+    echo "======  Running delete inactive themes on ${store} with API key: ${api_key} ====="
+
+    delete_inactive_themes "${store}" "${api_key}"
 done
+

@@ -55,40 +55,41 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # - name: Delete Old Themes
-    #   env:
-    #     STORE_NAME: ${{ inputs.store-name }}
-    #     REPO_NAME: ${{ inputs.repo-name }}
-    #     GITHUB_TOKEN: ${{ inputs.github-token }}
-    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-    #     WORK_DIR: ${{ inputs.theme-files-location }}
-    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
-    #     TAG_NAME: ${{ inputs.tag-name }}
-    #     ORG_NAME: ${{ inputs.org-name }}
-    #   run: |
-    #     if [[ -z "${{ inputs.tag-name }}" ]]; then
-    #       ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
-    #     fi
-    #   shell: bash
+    - name: Delete Old Themes
+      if: ${{ inputs.run-id == '1' }} 
+      env:
+        STORE_NAME: ${{ inputs.store-name }}
+        REPO_NAME: ${{ inputs.repo-name }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+        WORK_DIR: ${{ inputs.theme-files-location }}
+        BRANCH_NAME: ${{ inputs.current-branch-name }}
+        TAG_NAME: ${{ inputs.tag-name }}
+        ORG_NAME: ${{ inputs.org-name }}
+      run: |
+        if [[ -z "${{ inputs.tag-name }}" ]]; then
+          ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
+        fi
+      shell: bash
 
-    # - name: Deploy a PR or a Tag
-    #   id: deploy-pr
-    #   # Only run on the 1st commit, as per Alex. 
-    #   # The rest will be done directly on Shopify as bug fixes.
-    #   if: ${{ inputs.run-id == '1' }}
-    #   env:
-    #     STORE_NAME: ${{ inputs.store-name }}
-    #     API_KEY: ${{ inputs.api-key }}
-    #     THEME_ENV: ${{ inputs.theme-env }}
-    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-    #     WORK_DIR: ${{ inputs.theme-files-location }}
-    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
-    #     TAG_NAME: ${{ inputs.tag-name }}
-    #   run: |
-    #     if [[ "${{ inputs.current-branch-name }}" != "main" ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
-    #       ${{ github.action_path }}/scripts/DeployPRorTag.sh
-    #     fi
-    #   shell: bash
+    - name: Deploy a PR or a Tag
+      id: deploy-pr
+      # Only run on the 1st commit, as per Alex. 
+      # The rest will be done directly on Shopify as bug fixes.
+      if: ${{ inputs.run-id == '1' }}
+      env:
+        STORE_NAME: ${{ inputs.store-name }}
+        API_KEY: ${{ inputs.api-key }}
+        THEME_ENV: ${{ inputs.theme-env }}
+        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+        WORK_DIR: ${{ inputs.theme-files-location }}
+        BRANCH_NAME: ${{ inputs.current-branch-name }}
+        TAG_NAME: ${{ inputs.tag-name }}
+      run: |
+        if [[ "${{ inputs.current-branch-name }}" != "main" ]] || [[ -n "${{ inputs.tag-name }}" ]]; then 
+          ${{ github.action_path }}/scripts/DeployPRorTag.sh
+        fi
+      shell: bash
 
     - name: Deploy Main
       env:
@@ -101,7 +102,7 @@ runs:
         WORK_DIR: ${{ inputs.theme-files-location }}
         PRD_PARAMETER: ${{ inputs.is-prd }}
       run: |
-        #if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
+        if [[ "${{ inputs.current-branch-name }}" == 'main' ]]; then
           ${{ github.action_path }}/scripts/DeployMain.sh
-        #fi
+        fi
       shell: bash

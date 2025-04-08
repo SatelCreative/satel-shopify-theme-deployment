@@ -37,7 +37,7 @@ function deploy_main_branch(){
     fi
 
     TIME=$(TZ='US/Pacific' date '+%b %d %H:%M %Z %Y')  # Shortened date format
-    NEW_THEME_NAME="GITHUB-MAIN" #${BRANCH_NAME^^}"  # Add GitHub- prefix
+    NEW_THEME_NAME="GITHUB-${BRANCH_NAME^^}"  # Add GitHub- prefix
     echo "NEW NAME = ${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME}"
     # This will rename the theme
     echo "==== Rename theme on ${store} ==== "
@@ -74,7 +74,6 @@ for i in "${!STORES[@]}"; do
     api_key="${API_KEYS[$i]}"
     id="${IDS[$i]}"
     echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} and MAIN THEME ID: ${id} ====="
-
     deploy_main_branch "${store}" "${api_key}" "${id}" 
     
 done
