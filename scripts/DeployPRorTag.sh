@@ -38,14 +38,14 @@ deploy_pr_branch_or_tag() {
 
 
     # Get existing THEME_ID
-    THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}.myshopify.com" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
+    THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
     echo "==== Existing THEME_ID=${THEME_ID} ===="
 
     # Create the theme if it doesn't exist
     if [[ -z "${THEME_ID}" ]]; then
         echo "===== Creating theme ====="
         THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
-            -X POST "https://${STORE_NAME}.myshopify.com/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
+            -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
             -H "Content-Type: application/json" | grep -o '"id":[0-9]*' | grep -o '[0-9]*')
         echo "Created theme ID=${THEME_ID}"
@@ -53,7 +53,7 @@ deploy_pr_branch_or_tag() {
 
 
     echo "===== Downloading theme settings from live theme ====="
-    theme -e downloadPublishedSettings --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}.myshopify.com"  download --live
+    theme -e downloadPublishedSettings --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}"  download --live
     STATUS1=$?
     if [[ $STATUS1 -ne 0 ]]; then
         echo "==== Failing deployment due to error in downloading live theme settings"
