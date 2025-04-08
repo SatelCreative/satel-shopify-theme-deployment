@@ -14,14 +14,15 @@ else
 fi
 
 deploy_pr_branch_or_tag() {
+    local STORE_NAME="$1"
+    local THEMEKIT_PASSWORD="$2"
 
     if [[ -n $WORK_DIR ]]; then
         echo "==== WORK_DIR: ${WORK_DIR} ===="
         cd "$WORK_DIR" || exit
     fi
 
-    local STORE_NAME="$1"
-    local THEMEKIT_PASSWORD="$2"
+
 
     echo "==== Deploying for ${STORE_NAME} ===="
 
@@ -91,8 +92,8 @@ stores=(${STORE_NAME})
 api_key=(${API_KEY} )
 for store in "${stores[@]}"
     do
-    echo "====== Running deploy PR or Tag on store ${store} ====="  
-    deploy_pr_branch_or_tag "${store} ${api_key}" 
+    echo "====== Running deploy PR or Tag on store ${store}  & ${api_key} ====="  
+    #deploy_pr_branch_or_tag "${store} ${api_key}" 
     done
 done 
 
