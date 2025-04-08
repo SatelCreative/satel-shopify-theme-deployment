@@ -22,20 +22,13 @@ deploy_pr_branch_or_tag() {
         cd "$WORK_DIR" || exit
     fi
 
-
-
     echo "==== Deploying for ${STORE_NAME} ===="
 
     # Copy and update config
+    echo "==== Creating config.yml ===="
     cp config.yml.example config.yml
     sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" config.yml
     sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
-
-    # Extract THEMEKIT password from configuration file
-    #THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' config.yml | head -n 1 | sed 's/.*password:\s*//')
-    cat config.yml
-    echo "YOHO ${STORE_NAME} is ${THEMEKIT_PASSWORD}"
-
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
@@ -51,7 +44,6 @@ deploy_pr_branch_or_tag() {
         echo "Created theme ID=${THEME_ID}"
     fi
 
-
     echo "===== Downloading theme settings from live theme ====="
     theme -e downloadPublishedSettings download --live
     STATUS1=$?
@@ -60,7 +52,7 @@ deploy_pr_branch_or_tag() {
         exit $STATUS1
     fi
 
-    # Update TARGET_THEME_ID in config.yml with the new THEME_ID
+    # Update TARGET_THEME_ID in config.yml with the new THEME_ID to deploy it
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     echo "===== Deploying theme for the first time ====="
@@ -88,18 +80,15 @@ deploy_pr_branch_or_tag() {
     cd .. || exit 1
 }
 
-# Iterate over stores and deploy the theme
-# stores=($STORE_NAME)
-# api_keys=($API_KEY)
-# Split STORE_NAME and API_KEY into arrays by comma
+## Start of the script
 IFS=',' read -ra STORES <<< "$STORE_NAME"
 IFS=',' read -ra API_KEYS <<< "$API_KEY"
 
-# Check if the number of stores matches the number of API keys
-# if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
-#   echo "ERROR: The number of stores and API keys do not match!"
-#   exit 1
-# fi
+Check if the number of stores matches the number of API keys
+if [ ${#STORES[@]} -ne ${#API_KEYS[@]} ]; then
+  echo "ERROR: The number of stores and API keys do not match!"
+  exit 1
+fi
 
 # Iterate over each store and corresponding API key
 for i in "${!STORES[@]}"; do
@@ -107,14 +96,8 @@ for i in "${!STORES[@]}"; do
     api_key="${API_KEYS[$i]}"
     echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} ====="
 
-    # Set the API key for the store
-    #THEMEKIT_PASSWORD="${api_key}"
-    
-    # Call your deploy function
     deploy_pr_branch_or_tag "${store}" "${api_key}"
 done
-
-
 
 # Output theme IDs and preview links for GitHub
 echo "THEME_IDs=${THEME_IDS[@]}"
