@@ -85,6 +85,6 @@ for i in "${!STORES[@]}"; do
     id="${IDS[$i]}"
     echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} and MAIN THEME ID: ${id} ====="
 
-    #deploy_main_branch "${store}" "${api_key}" "${id}" 
+    deploy_main_branch "${store}" "${api_key}" "${id}" 
     
 done
