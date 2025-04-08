@@ -11,9 +11,10 @@ THEME_ID=""
 get_password_for_store() {
   local TARGET_BLOCK="$1"
   local TARGET_STORE="$2"
-
-  test=$(yq -r ".${TARGET_BLOCK} | select(.store | test(\"\\b${TARGET_STORE}\\b\")) | .store" storefront/config.yml)
-  echo "<><>${test}<<<<"
+  test1=$(yq -r ".${TARGET_BLOCK}[] | select(.store == \"${TARGET_STORE}\") | .store" storefront/config.yml)
+  test=$(yq -r ".${TARGET_BLOCK}[] | select(.store == \"${TARGET_STORE}\") | .password" storefront/config.yml)
+  echo "test1<><>${test1}<<<<"
+  echo "test<><>${test}<<<<"
 }
 
 
