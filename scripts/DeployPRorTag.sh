@@ -15,14 +15,18 @@ fi
 
 deploy_pr_branch_or_tag() {
     local STORE_NAME="$1"
-    local THEMEKIT_PASSWORD="$2"
 
     echo "==== Deploying for ${STORE_NAME} ===="
 
     # Copy and update config
     cp config.yml.example config.yml
-    sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" config.yml
-    sed -i "s/store: STORE/store: ${STORE_NAME}/g" config.yml
+    sed -i "s/password: API_KEY/password: ${THEMEKIT_PASSWORD}/g" storefront/config.yml
+    sed -i "s/store: STORE/store: ${STORE_NAME}/g" storefront/config.yml
+
+    # Extract THEMEKIT password from configuration file
+    THEMEKIT_PASSWORD=$(grep -E 'password:\s*.*' storefront/config.yml | head -n 1 | sed 's/.*password:\s*//')
+    cat storefront/config.yml
+
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)
@@ -80,21 +84,19 @@ deploy_pr_branch_or_tag() {
 }
 
 # Parse stores and API keys into arrays
-IFS=' ' read -r -a STORE_ARRAY <<< "${STORES}"
-IFS=' ' read -r -a API_KEY_ARRAY <<< "${API_KEYS}"
+IFS=' ' read -r -a STORE_ARRAY <<< "${STORE_NAME}"
 echo "STORE----=${STORE_ARRAY[@]}"
 
 # Iterate and deploy
 for index in "${STORE_ARRAY[@]}"; do
     store="${STORE_ARRAY[$index]}"
-    key="${API_KEY_ARRAY[$index]}"
     
     if [[ -z "$store" || -z "$key" ]]; then
         echo "⚠️ Skipping empty store or API key at index ${index}"
         continue
     fi
     echo "====== Running deploy PR or Tag on store ${store} ====="
-    deploy_pr_branch_or_tag "$store" "$key"
+    deploy_pr_branch_or_tag "$store"
 done
 
 # Output theme IDs and preview links for GitHub
