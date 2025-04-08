@@ -38,10 +38,10 @@ function deploy_main_branch(){
 
     TIME=$(TZ='US/Pacific' date '+%b %d %H:%M %Z %Y')  # Shortened date format
     NEW_THEME_NAME="GITHUB-${BRANCH_NAME^^}"  # Add GitHub- prefix
-
+    echo "NEW NAME = ${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME}"
     # This will rename the theme
     echo "==== Rename theme on ${store} ==== "
-    curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME} \", \"id\": \"${MAIN_THEME_ID}\"}}" \
+    curl -d "{\"theme\":{\"name\": \"${PUBLISH_TEXT}${NEW_THEME_NAME} ${TIME}\", \"id\": \"${MAIN_THEME_ID}\"}}" \
         -X PUT "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes/${MAIN_THEME_ID}.json" \
         -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
         -H "Content-Type: application/json"
