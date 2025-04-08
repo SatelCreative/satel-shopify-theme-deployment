@@ -12,9 +12,10 @@ get_password_for_store() {
   local TARGET_BLOCK="$1"
   local TARGET_STORE="$2"
 
-  test =(`yq -r ".${TARGET_BLOCK} | select(.store | test(\"\\b${TARGET_STORE}\\b\")) | .password" storefront/config.yml`)
+  test=$(yq -r ".${TARGET_BLOCK} | select(.store | test(\"\\b${TARGET_STORE}\\b\")) | .password" storefront/config.yml)
   echo "<><>${test}<<<<"
 }
+
 
 
 
