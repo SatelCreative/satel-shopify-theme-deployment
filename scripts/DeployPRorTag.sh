@@ -81,8 +81,11 @@ deploy_pr_branch_or_tag() {
 }
 
 ## Start of the script
-IFS=',' read -ra STORES <<< "$STORE_NAME"
-IFS=',' read -ra API_KEYS <<< "$API_KEY"
+# IFS=',' read -ra STORES <<< "$STORE_NAME"
+# IFS=',' read -ra API_KEYS <<< "$API_KEY"
+# Split by comma, then trim leading/trailing whitespace for each item
+STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 echo "==== STORES: ${STORES[@]} ===="
 echo "==== API_KEYS: ${API_KEYS[@]} ===="
 
