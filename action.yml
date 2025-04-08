@@ -56,7 +56,6 @@ runs:
   using: "composite"
   steps:
     - name: Delete Old Themes
-      if: ${{ inputs.run-id == '1' }} 
       env:
         STORE_NAME: ${{ inputs.store-name }}
         API_KEY: ${{ inputs.api-key }}
