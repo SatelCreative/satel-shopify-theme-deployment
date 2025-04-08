@@ -42,9 +42,14 @@ deploy_pr_branch_or_tag() {
     THEMEKIT_PASSWORD=$(get_password_for_store "downloadPublishedSettings" "$STORE_NAME")
    # cat storefront/config.yml
 
-    echo "===== Getting THEMEKIT_PASSWORD for ${STORE_NAME} ====="
+    echo "===== Getting THEMEKIT_PASSWORD for download ${STORE_NAME} ====="
     #THEMEKIT_PASSWORD=$(get_password_for_store "$STORE_NAME")
-    echo "===== THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD} ====="
+    echo "===== THEMEKIT_PASSWORD downloadPublishedSettings: ${THEMEKIT_PASSWORD} ====="
+
+    echo "===== Getting THEMEKIT_PASSWORD for deploy ${STORE_NAME} ====="
+    THEMEKIT_PASSWORD=$(get_password_for_store "deployTheme" "$STORE_NAME")
+    echo "===== THEMEKIT_PASSWORD deploy: ${THEMEKIT_PASSWORD} ====="
+
 
 
     # # Get existing THEME_ID
