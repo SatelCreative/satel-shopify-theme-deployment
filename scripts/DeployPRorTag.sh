@@ -37,7 +37,7 @@ deploy_pr_branch_or_tag() {
 
     cat storefront/config.yml
 
-    echo "THEMEKIT_PASSWORD ${THEMEKIT_PASSWORD}"
+    echo "=====THEMEKIT_PASSWORD: ${THEMEKIT_PASSWORD}"
 
     # Get existing THEME_ID
     THEME_ID=$(theme get --list --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" | grep -i "${THEME_NAME}" | cut -d "[" -f 2 | cut -d "]" -f 1)

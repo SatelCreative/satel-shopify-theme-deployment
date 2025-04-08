@@ -52,21 +52,21 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Delete Old Themes
-      env:
-        STORE_NAME: ${{ inputs.store-name }}
-        REPO_NAME: ${{ inputs.repo-name }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-        SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
-        WORK_DIR: ${{ inputs.theme-files-location }}
-        BRANCH_NAME: ${{ inputs.current-branch-name }}
-        TAG_NAME: ${{ inputs.tag-name }}
-        ORG_NAME: ${{ inputs.org-name }}
-      run: |
-        if [[ -z "${{ inputs.tag-name }}" ]]; then
-          ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
-        fi
-      shell: bash
+    # - name: Delete Old Themes
+    #   env:
+    #     STORE_NAME: ${{ inputs.store-name }}
+    #     REPO_NAME: ${{ inputs.repo-name }}
+    #     GITHUB_TOKEN: ${{ inputs.github-token }}
+    #     SHOPIFY_API_VERSION: ${{ inputs.shopify-api-version }}
+    #     WORK_DIR: ${{ inputs.theme-files-location }}
+    #     BRANCH_NAME: ${{ inputs.current-branch-name }}
+    #     TAG_NAME: ${{ inputs.tag-name }}
+    #     ORG_NAME: ${{ inputs.org-name }}
+    #   run: |
+    #     if [[ -z "${{ inputs.tag-name }}" ]]; then
+    #       ${{ github.action_path }}/scripts/DeleteInactiveThemes.sh 
+    #     fi
+    #   shell: bash
 
     - name: Deploy a PR or a Tag
       id: deploy-pr
