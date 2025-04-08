@@ -70,7 +70,7 @@ deploy_pr_branch_or_tag() {
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
     echo "===== Deploying theme for the first time ====="
-    theme -e deployTheme deploy 
+    theme -e deployTheme --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" deploy 
     STATUS2=$?
 
     # Retry deployment if the first attempt fails
