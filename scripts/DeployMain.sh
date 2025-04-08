@@ -11,8 +11,6 @@ function deploy_main_branch(){
     then
         echo "==== WORK_DIR ${WORK_DIR} ===="
         cd $WORK_DIR
-        pwd 
-        ls
     fi  
 
     # # Copy and update config
