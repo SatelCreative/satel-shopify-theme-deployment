@@ -21,8 +21,8 @@ function deploy_main_branch(){
 
     cat config.yml
     
-    LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
-    echo "THEME LIST = ${LIST}"
+    # LIST=`theme get --list --password=${THEMEKIT_PASSWORD} --store="${STORE_NAME}"`
+    # echo "THEME LIST = ${LIST}"
 
     # echo "===== Downloading theme settings from live theme ====="
     # theme -e downloadPublishedSettings download --live
@@ -75,16 +75,18 @@ function deploy_main_branch(){
 
 STORES=($(echo "$STORE_NAME" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
 API_KEYS=($(echo "$API_KEY" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'))
+IDS=( ${MAIN_THEME_IDS} )
 echo "==== STORES: ${STORES[@]} ===="
 echo "==== API_KEYS: ${API_KEYS[@]} ===="
+echo "==== IDS: ${IDS[@]} ===="
 
 # Iterate over each store and corresponding API key
 for i in "${!STORES[@]}"; do
     store="${STORES[$i]}"
     api_key="${API_KEYS[$i]}"
-    ids=( ${MAIN_THEME_IDS} )
-    echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} and MAIN THEME ID: ${ids[i]} ====="
+    id="${IDS[$i]}"
+    echo "====== Running deploy PR or Tag on store ${store} with API key: ${api_key} and MAIN THEME ID: ${id} ====="
 
-    deploy_main_branch "${store}" "${api_key}" "${ids[i]}" 
-    i=$((i+1))
+    #deploy_main_branch "${store}" "${api_key}" "${id}" 
+    
 done
