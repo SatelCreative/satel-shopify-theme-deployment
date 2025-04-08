@@ -36,7 +36,7 @@ deploy_pr_branch_or_tag() {
 
     # Create the theme if it doesn't exist
     if [[ -z "${THEME_ID}" ]]; then
-        echo "===== Creating theme ====="
+        echo "===== Creating theme on ${STORE_NAME}====="
         THEME_ID=$(curl -s -d "{\"theme\":{\"name\": \"PR: ${THEME_NAME}\", \"env\": \"${THEME_ENV}\"}}" \
             -X POST "https://${STORE_NAME}/admin/api/${SHOPIFY_API_VERSION}/themes.json" \
             -H "X-Shopify-Access-Token: ${THEMEKIT_PASSWORD}" \
@@ -44,7 +44,7 @@ deploy_pr_branch_or_tag() {
         echo "Created theme ID=${THEME_ID}"
     fi
 
-    echo "===== Downloading theme settings from live theme ====="
+    echo "===== Downloading theme settings from live theme on ${STORE_NAME} ====="
     theme -e downloadPublishedSettings download --live
     STATUS1=$?
     if [[ $STATUS1 -ne 0 ]]; then
@@ -55,24 +55,24 @@ deploy_pr_branch_or_tag() {
     # Update TARGET_THEME_ID in config.yml with the new THEME_ID to deploy it
     sed -i "s/theme_id: TARGET_THEME_ID/theme_id: ${THEME_ID}/" config.yml
 
-    echo "===== Deploying theme for the first time ====="
+    echo "===== Deploying theme for the first time on ${STORE_NAME} ====="
     theme -e deployTheme deploy 
     STATUS2=$?
 
     if [[ $STATUS2 -ne 0 ]]; then
-        echo "===== Re-deploying theme ====="
+        echo "===== Re-deploying theme on ${STORE_NAME}====="
         theme -e deployTheme deploy 
         STATUS3=$?
         if [[ $STATUS3 -ne 0 ]]; then
             echo "THEME_ID=${THEME_IDS[@]}"
             echo "preview_link=${PREVIEW_LINKS[@]}" >> "$GITHUB_OUTPUT"
             echo "theme_id=${THEME_IDS[@]}" >> "$GITHUB_OUTPUT"
-            echo "===== Failing deployment due to error in theme deployment ====="
+            echo "===== Failing deployment due to error in theme deployment on ${STORE_NAME} ====="
             exit $STATUS3
         fi
     fi
 
-    echo "===== Generating preview link ====="
+    echo "===== Generating preview link for ${STORE_NAME} ====="
     PREVIEW_LINK=$(theme -e deployTheme --themeid="${THEME_ID}" --password="${THEMEKIT_PASSWORD}" --store="${STORE_NAME}" open -b /bin/echo | grep -i "${STORE_NAME}" | awk 'END {print $3}')
     PREVIEW_LINKS+=("Preview this PR on [${STORE_NAME}](${PREVIEW_LINK})<br>")
     THEME_IDS+=("${THEME_ID}")
