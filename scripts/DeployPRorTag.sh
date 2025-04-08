@@ -111,7 +111,7 @@ for i in "${!STORES[@]}"; do
     #THEMEKIT_PASSWORD="${api_key}"
     
     # Call your deploy function
-    deploy_pr_branch_or_tag "${store} ${api_key}"
+    deploy_pr_branch_or_tag "${store}" "${api_key}"
 done
 
 
