@@ -11,15 +11,11 @@ THEME_ID=""
 get_password_for_store() {
   local TARGET_BLOCK="$1"
   local TARGET_STORE="$2"
-  test1=$(yq -r ".${TARGET_BLOCK}[] | select(.store == \"${TARGET_STORE}\") | .store" storefront/config.yml)
-  test=$(yq -r ".${TARGET_BLOCK}[] | select(.store == \"${TARGET_STORE}\") | .password" storefront/config.yml)
+  test1=$(yq -r ".${TARGET_BLOCK} | select(.store == \"${TARGET_STORE}\") | .store" storefront/config.yml)
+  test=$(yq -r ".${TARGET_BLOCK} | select(.store == \"${TARGET_STORE}\") | .password" storefront/config.yml)
   echo "test1<><>${test1}<<<<"
   echo "test<><>${test}<<<<"
 }
-
-
-
-
 
 
 # Set THEME_NAME based on TAG_NAME or fallback to BRANCH_NAME
