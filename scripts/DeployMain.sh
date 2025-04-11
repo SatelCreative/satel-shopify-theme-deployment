@@ -46,16 +46,19 @@ function deploy_main_branch(){
         -H "Content-Type: application/json"
 
     # Deploy to main theme on Shopify
-    echo "==== Deploying to main theme on Shopify on ${store}==== "
-    theme -e deployTheme deploy --allow-live; STATUS1=$?    
+    echo "==== Deploying to main theme for the first time on ${store}==== "
+    theme -e deployTheme deploy --allow-live 
+    STATUS2=$?
 
-    # Return the status code of theme commands
-    TOTAL=$((STATUS1 + STATUS2))
-    if [[ $TOTAL != 0 ]]
-        then 
-            echo "==== Failing deployment on ${store} ===="
-            exit $TOTAL
-        fi 
+    if [[ $STATUS2 -ne 0 ]]; then
+        echo "===== Re-deploying main theme on ${STORE_NAME}====="
+        theme -e deployTheme deploy --allow-live 
+        STATUS3=$?
+        if [[ $STATUS3 -ne 0 ]]; then
+            echo "===== Failing deployment due to error in theme deployment on ${STORE_NAME} ====="
+            exit $STATUS3
+        fi
+    fi
 
     cd .. || exit 1
 }
